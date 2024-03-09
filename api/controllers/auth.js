@@ -17,21 +17,29 @@ export const register = (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(req.body.password, salt);
 
-    const q =
-      "INSERT INTO Users (Username, Password, UserType, UniversityID, name) VALUE (?)";
+    const extension = req.body.username.substring(req.body.username.indexOf("@") + 1, req.body.username.lastIndexOf("."));
 
-    const values = [
-      req.body.username,
-      hashedPassword,
-      req.body.userType,
-      req.body.universityID,
-      req.body.name,
-    ];
-    console.log(req.body);
-
-    db.query(q, [values], (err, data) => {
+    const uni = "SELECT * FROM universities WHERE extension = '" + extension + "'";
+    console.log(uni);
+    db.query(uni, [extension], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("User has been created.");
+      if (data.length == 0) return res.status(409).json("Email not from regisetered college!");
+      const q =
+        "INSERT INTO Users (Username, Password, UserType, UniversityID, name) VALUE (?)";
+
+      const values = [
+        req.body.username,
+        hashedPassword,
+        req.body.userType,
+        req.body.universityID,
+        req.body.name,
+      ];
+      console.log(req.body);
+
+      db.query(q, [values], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("User has been created.");
+      });
     });
   });
 };
