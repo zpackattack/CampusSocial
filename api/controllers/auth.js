@@ -4,8 +4,10 @@ import jwt from "jsonwebtoken";
 
 export const register = (req, res) => {
   //CHECK USER IF EXISTS
+  console.log(req.body);
 
-  const q = "SELECT * FROM users WHERE username = ?";
+  const q = "SELECT * FROM users WHERE username = '" + req.body.username + "'";
+  console.log(q);
 
   db.query(q, [req.body.username], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -16,14 +18,16 @@ export const register = (req, res) => {
     const hashedPassword = bcrypt.hashSync(req.body.password, salt);
 
     const q =
-      "INSERT INTO users (`username`,`email`,`password`,`name`) VALUE (?)";
+      "INSERT INTO Users (Username, Password, UserType, UniversityID, name) VALUE (?)";
 
     const values = [
       req.body.username,
-      req.body.email,
       hashedPassword,
+      req.body.userType,
+      req.body.universityID,
       req.body.name,
     ];
+    console.log(req.body);
 
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
