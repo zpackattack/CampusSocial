@@ -19,7 +19,7 @@ export const register = (req, res) => {
 
     const extension = req.body.username.substring(req.body.username.indexOf("@") + 1, req.body.username.lastIndexOf("."));
 
-    const uni = "SELECT * FROM universities WHERE extension = '" + extension + "'";
+    const uni = "SELECT * FROM universities WHERE ext = '" + extension + "'";
     console.log(uni);
     db.query(uni, [extension], (err, data) => {
       if (err) return res.status(500).json(err);

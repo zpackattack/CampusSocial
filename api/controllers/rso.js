@@ -61,13 +61,35 @@ export const getUserRSOs = (req, res) => {
 
     // SQL query to retrieve RSOs that the user is a part of
     const query = `
-        SELECT R.Name, R.rsoID
+        SELECT R.*
         FROM rsos R
         JOIN rsomembers M ON R.rsoID = M.rsoID
         WHERE M.userID = ?
     `;
 
     db.query(query, [userID], (error, results) => {
+        if (error) {
+            console.error('Error executing MySQL query: ' + error);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        const rsos = results.map(result => result.name);
+        res.json(results);
+        
+    });
+}
+
+export const getUniversityRSOs = (req, res) => {
+    const universityID = req.body.universityID;
+
+    // SQL query to retrieve RSOs that the user is a part of
+    const query = `
+        SELECT *
+        FROM rsos
+        WHERE universityID = ?
+    `;
+
+    db.query(query, [universityID], (error, results) => {
         if (error) {
             console.error('Error executing MySQL query: ' + error);
             res.status(500).json({ error: 'Internal server error' });
