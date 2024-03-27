@@ -3,6 +3,8 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
@@ -18,8 +20,9 @@ const Post = ({ post }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
+  console.log(post);
 
-  const { isLoading, error, data } = useQuery(["likes", post.id], () =>
+  /*const { isLoading, error, data } = useQuery(["likes", post.id], () =>
     makeRequest.get("/likes?postId=" + post.id).then((res) => {
       return res.data;
     })
@@ -52,43 +55,43 @@ const Post = ({ post }) => {
   );
 
   const handleLike = () => {
-    mutation.mutate(data.includes(currentUser.id));
+    mutation.mutate(data.includes(currentUser.userID));
   };
 
   const handleDelete = () => {
-    deleteMutation.mutate(post.id);
+    deleteMutation.mutate(post.eventID);
   };
-
+*/
   return (
     <div className="post">
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={"/upload/"+post.profilePic} alt="" />
+            {/*<img src={"/upload/"+post.profilePic} alt="" />*/}
             <div className="details">
               <Link
-                to={`/profile/${post.userId}`}
+                to='www.google.com'
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <span className="name">{post.name}</span>
               </Link>
-              <span className="date">{moment(post.createdAt).fromNow()}</span>
+            {/*<span className="date">{moment(post.createdAt).fromNow()}</span>*/}
             </div>
           </div>
-          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
+          {/*<MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
           {menuOpen && post.userId === currentUser.id && (
             <button onClick={handleDelete}>delete</button>
-          )}
+          )}*/}
         </div>
         <div className="content">
-          <p>{post.desc}</p>
-          <img src={"/upload/" + post.img} alt="" />
+          <p>{post.descriptions}</p>
+          {/*<img src={"/upload/" + post.img} alt="" />*/}
         </div>
         <div className="info">
-          <div className="item">
+          {/*<div className="item">
             {isLoading ? (
               "loading"
-            ) : data.includes(currentUser.id) ? (
+            ) : data.includes(currentUser.userID) ? (
               <FavoriteOutlinedIcon
                 style={{ color: "red" }}
                 onClick={handleLike}
@@ -97,10 +100,18 @@ const Post = ({ post }) => {
               <FavoriteBorderOutlinedIcon onClick={handleLike} />
             )}
             {data?.length} Likes
-          </div>
+          </div>*/}
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
             See Comments
+          </div>
+          <div className="item">
+            <LocalPhoneIcon />
+            {post.contactPhone}
+          </div>
+          <div className="item">
+            <MailOutlineIcon />
+            {post.contactEmail}
           </div>
           <div className="item">
             <ShareOutlinedIcon />

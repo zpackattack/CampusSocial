@@ -72,7 +72,7 @@ export const createEvent = (req, res) => {
 
 
 export const getEvents = (req, res) => {
-    const { userID } = req.body;
+    const { userID } = req.query;
 
     // SQL query to retrieve events and posts based on the criteria
     const query = `
