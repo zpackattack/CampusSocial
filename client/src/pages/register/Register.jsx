@@ -25,7 +25,7 @@ const Register = () => {
     const fetchUniversities = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8800/api/universities?name=${searchTerm}`
+          `http://localhost:8800/api/university/?name=${searchTerm}`
         );
         setUniversities(response.data);
         setShowDropdown(true);

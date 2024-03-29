@@ -25,6 +25,7 @@ const Profile = () => {
 
   const { isLoading, error, data } = useQuery(["user"], () =>
     makeRequest.get("/users/find/" + userId).then((res) => {
+      console.log(res.data);
       return res.data;
     })
   );
@@ -64,8 +65,8 @@ const Profile = () => {
       ) : (
         <>
           <div className="images">
-            <img src={"/upload/"+data.coverPic} alt="" className="cover" />
-            <img src={"/upload/"+data.profilePic} alt="" className="profilePic" />
+           <img src="https://cdn.mos.cms.futurecdn.net/wtqqnkYDYi2ifsWZVW2MT4-1200-80.jpg" alt="" className="cover" />
+            {/*<img src={"/upload/"+data.profilePic} alt="" className="profilePic" />*/}
           </div>
           <div className="profileContainer">
             <div className="uInfo">
@@ -100,7 +101,7 @@ const Profile = () => {
                 </div>
                 {rIsLoading ? (
                   "loading"
-                ) : userId === currentUser.id ? (
+                ) : userId === currentUser.userID ? (
                   <button onClick={() => setOpenUpdate(true)}>update</button>
                 ) : (
                   <button onClick={handleFollow}>
@@ -125,3 +126,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

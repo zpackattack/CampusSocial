@@ -9,7 +9,7 @@ export const SearchBar = ({ setResults, setSelectedUniversity, inputs }) => {
   const fetchData = async (value) => {
     try {
         const response = await axios.get(
-          `http://localhost:8800/api/university/get?name=${value}`
+          `http://localhost:8800/api/university/?name=${value}`
         );
         console.log(response.data);
         setResults(response.data);
