@@ -21,6 +21,27 @@ export const getUniversity = (req, res) => {
   });
 };
 
+export const getUniversityID = (req, res) => {
+  const universityID = req.params.universityID; // Get the university name from query parameters
+
+  // Query to select universities with names similar to the provided name
+  const query = 'SELECT * FROM universities WHERE universityID = ?';
+
+  // Execute the query with the wildcard appended to the name
+  db.query(query, [universityID], (err, results) => {
+    if (err) {
+      console.error('Error executing MySQL query:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'No universities found' });
+    }
+
+    res.json(results); // Return the results
+  });
+};
+
 export const createUniversity = (req, res) => {
   const { name, location, description, numberOfStudents, pictures, extension } = req.body;
 

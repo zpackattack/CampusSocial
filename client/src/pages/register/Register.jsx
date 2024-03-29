@@ -6,6 +6,7 @@ import { SearchBar } from "../../components/searchBar/SearchBar";
 import { SearchResultsList } from "../../components/searchBar/SearchResultsList";
 
 
+
 const Register = () => {
   const [inputs, setInputs] = useState({
     name: "",
@@ -56,11 +57,13 @@ const Register = () => {
       universityID: university.universityID, // Assuming universityID is the ID of the selected university
     }));
     console.log(inputs);
+    console.log("Uni", university.name);
     setUniversities([]);
     setShowDropdown(false);
-    console.log(results);
+    
     // Add the following line to update the input field with the selected university name
     setResults([{ name: university.name }]); // This will update the search results with the selected university name
+    console.log(results.name);
     setInput(university.name)
   };
 

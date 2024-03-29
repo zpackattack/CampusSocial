@@ -32,11 +32,11 @@ const LeftBar = () => {
           </div>
           <div className="item">
             <img src={Friends} alt="" />
-            <span>Friends</span>
+            <span>University</span>
           </div>
           <div className="item">
             <img src={Groups} alt="" />
-            <span>Groups</span>
+            <span>RSOs</span>
           </div>
           <div className="item">
             <img src={Market} alt="" />

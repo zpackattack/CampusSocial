@@ -35,7 +35,9 @@ const Navbar = () => {
         </div>
       </div>
       <div className="right">
-        <PersonOutlinedIcon />
+        <Link to={`/profile/${currentUser.userID}`} style={{ textDecoration: "none" }}>
+          <PersonOutlinedIcon />
+        </Link>
         <EmailOutlinedIcon />
         <NotificationsOutlinedIcon />
         <div className="user">
