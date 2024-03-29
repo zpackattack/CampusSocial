@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/create", createEvent);
 router.get("/getUserEvents", getEvents);
-router.get("/ocation", getLocation);
+router.get("/location", getLocation);
 router.put("/", editEvent);
 router.put("/location", editLocation);
 

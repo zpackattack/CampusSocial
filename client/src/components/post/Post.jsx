@@ -5,6 +5,7 @@ import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
@@ -21,6 +22,18 @@ const Post = ({ post }) => {
 
   const { currentUser } = useContext(AuthContext);
   console.log(post);
+  const { isLoading, error, data: location } = useQuery(["location", post.locationID], () =>
+  makeRequest.get("/event/location?locationID=" + post.locationID).then((res) => {
+    console.log(res.data);
+    return res.data[0]; // Return the entire data object
+  }).catch(error => {
+    console.error("Error fetching location:", error);
+    return null; // Return null or any default value in case of an error
+  })
+);
+
+  console.log(location? location.name : "");
+  //const queryClient = useQueryClient();
 
   /*const { isLoading, error, data } = useQuery(["likes", post.id], () =>
     makeRequest.get("/likes?postId=" + post.id).then((res) => {
@@ -28,7 +41,7 @@ const Post = ({ post }) => {
     })
   );
 
-  const queryClient = useQueryClient();
+  
 
   const mutation = useMutation(
     (liked) => {
@@ -69,19 +82,31 @@ const Post = ({ post }) => {
           <div className="userInfo">
             {/*<img src={"/upload/"+post.profilePic} alt="" />*/}
             <div className="details">
-              <Link
-                to='www.google.com'
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <span className="name">{post.name}</span>
-              </Link>
+              <h1 className="name">{post.name}</h1>
+              
             {/*<span className="date">{moment(post.createdAt).fromNow()}</span>*/}
             </div>
+            
           </div>
+          
           {/*<MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
           {menuOpen && post.userId === currentUser.id && (
             <button onClick={handleDelete}>delete</button>
           )}*/}
+        </div>
+        <div className="content">
+        <div className="item">
+            <LocationOnIcon />
+            <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${location ? location.latitude: ""},${location ? location.longitude: ""}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+            {location ? location.name: "no name"}
+            </a>
+          </div>
+          
+          {/*<img src={"/upload/" + post.img} alt="" />*/}
         </div>
         <div className="content">
           <p>{post.descriptions}</p>
@@ -105,11 +130,11 @@ const Post = ({ post }) => {
             <TextsmsOutlinedIcon />
             See Comments
           </div>
-          <div className="item">
+          <div className="item" onClick={() => window.location.href = `tel:${post.contactPhone}`}>
             <LocalPhoneIcon />
             {post.contactPhone}
           </div>
-          <div className="item">
+          <div className="item" onClick={() => window.location.href = `mailto:${post.contactEmail}`}>
             <MailOutlineIcon />
             {post.contactEmail}
           </div>
@@ -118,7 +143,7 @@ const Post = ({ post }) => {
             Share
           </div>
         </div>
-        {commentOpen && <Comments postId={post.id} />}
+        {commentOpen && <Comments postId={post.eventID} />}
       </div>
     </div>
   );

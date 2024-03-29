@@ -5,7 +5,7 @@ import { makeRequest } from "../../axios";
 
 const Posts = ({userId}) => {
   const { isLoading, error, data } = useQuery(["event"], () =>
-    makeRequest.get("/event/getUserEvents?userId="+ userId).then((res) => {
+    makeRequest.get("/event/getUserEvents?userID="+ userId).then((res) => {
       console.log(res.data);
       return res.data;
     })
