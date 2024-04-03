@@ -17,6 +17,7 @@ import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/authContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import University from "./pages/profile/Univeristy";
+import RSO from "./pages/profile/RSO";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -70,6 +71,10 @@ function App() {
         {
           path: "/university/:universityID",
           element: <University />,
+        },
+        {
+          path: "/rso/:rsoID",
+          element: <RSO />,
         },
       ],
     },

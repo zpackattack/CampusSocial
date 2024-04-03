@@ -180,3 +180,42 @@ export const editLocation = (req, res) => {
         res.status(200).json({ message: 'Location updated successfully' });
     });
 }
+
+export const getRSOEvents = (req, res) => {
+    const { rsoID } = req.params;
+
+    // SQL query to get eventIDs associated with the given RSO
+    const query = `
+        SELECT eventID
+        FROM eventrsomembers
+        WHERE rsoID = ?
+    `;
+
+    db.query(query, [rsoID], (error, results) => {
+        if (error) {
+            console.error('Error executing MySQL query: ' + error);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+
+        // Extract eventIDs from results
+        const eventIDs = results.map(result => result.eventID);
+
+        // SQL query to get events using the extracted eventIDs
+        const eventQuery = `
+            SELECT *
+            FROM events
+            WHERE eventID IN (?)
+        `;
+
+        db.query(eventQuery, [eventIDs], (eventError, eventResults) => {
+            if (eventError) {
+                console.error('Error executing MySQL query: ' + eventError);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+
+            res.json(eventResults);
+        });
+    });
+};
