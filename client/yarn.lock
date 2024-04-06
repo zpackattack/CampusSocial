@@ -1644,6 +1644,11 @@
   "resolved" "https://registry.npmjs.org/@popperjs/core/-/core-2.11.8.tgz"
   "version" "2.11.8"
 
+"@react-leaflet/core@^2.1.0":
+  "integrity" "sha512-Qk7Pfu8BSarKGqILj4x7bCSZ1pjuAPZ+qmRwH5S7mDS91VSbVVsJSrW4qA+GPrro8t69gFYVMWb1Zc4yFmPiVg=="
+  "resolved" "https://registry.npmjs.org/@react-leaflet/core/-/core-2.1.0.tgz"
+  "version" "2.1.0"
+
 "@remix-run/router@1.15.1":
   "integrity" "sha512-zcU0gM3z+3iqj8UX45AmWY810l3oUmXM7uH4dt5xtzvMhRtYVhKGOmgOd1877dOPPepfCjUv57w+syamWIYe7w=="
   "resolved" "https://registry.npmjs.org/@remix-run/router/-/router-1.15.1.tgz"
@@ -6141,6 +6146,11 @@
   dependencies:
     "language-subtag-registry" "~0.3.2"
 
+"leaflet@^1.9.0":
+  "integrity" "sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA=="
+  "resolved" "https://registry.npmjs.org/leaflet/-/leaflet-1.9.4.tgz"
+  "version" "1.9.4"
+
 "leven@^3.1.0":
   "integrity" "sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A=="
   "resolved" "https://registry.npmjs.org/leven/-/leven-3.1.0.tgz"
@@ -7623,6 +7633,13 @@
   "integrity" "sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w=="
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
   "version" "18.2.0"
+
+"react-leaflet@^4.2.1":
+  "integrity" "sha512-p9chkvhcKrWn/H/1FFeVSqLdReGwn2qmiobOQGO3BifX+/vV/39qhY8dGqbdcPh1e6jxh/QHriLXr7a4eLFK4Q=="
+  "resolved" "https://registry.npmjs.org/react-leaflet/-/react-leaflet-4.2.1.tgz"
+  "version" "4.2.1"
+  dependencies:
+    "@react-leaflet/core" "^2.1.0"
 
 "react-popper@^2.3.0":
   "integrity" "sha512-e1hj8lL3uM+sgSR4Lxzn5h1GxBlpa4CQz0XLF8kx4MDrDRWY0Ena4c97PUeSX9i5W3UAfDP0z0FXCTQkoXUl3Q=="

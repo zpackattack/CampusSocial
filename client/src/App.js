@@ -18,6 +18,9 @@ import { AuthContext } from "./context/authContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import University from "./pages/profile/Univeristy";
 import RSO from "./pages/profile/RSO";
+import RSOPage from "./pages/home/RSOPage";
+import JoinedRSO from "./pages/home/JoinedRSO";
+import CreateRSORequest from "./pages/RSO/CreateNewRSO";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -65,7 +68,7 @@ function App() {
           element: <Home />,
         },
         {
-          path: "/profile/:userID",
+          path: "/profile",
           element: <Profile />,
         },
         {
@@ -75,6 +78,18 @@ function App() {
         {
           path: "/rso/:rsoID",
           element: <RSO />,
+        },
+        {
+          path: "/allRSOs",
+          element: <RSOPage />,
+        },
+        {
+          path: "/userRSOs",
+          element: <JoinedRSO />,
+        },
+        {
+          path: "/createRSO",
+          element: <CreateRSORequest />,
         },
       ],
     },

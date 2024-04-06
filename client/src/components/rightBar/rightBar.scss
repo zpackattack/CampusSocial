@@ -8,6 +8,7 @@
     height: calc(100vh - 70px);
     overflow: scroll;
     background-color: themed("bgSoft");
+    z-index: 10;
 
     @include mobile{
       display: none;
@@ -22,6 +23,7 @@
 
     .container {
       padding: 20px;
+      
 
       .item {
         -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
@@ -30,6 +32,7 @@
         padding: 20px;
         margin-bottom: 20px;
         background-color: themed("bg");
+        border-radius: 4%;
 
         span {
           color: gray;
@@ -81,9 +84,10 @@
 
             button {
               border: none;
-              padding: 8px;
+              padding: 9px;
               color: white;
               cursor: pointer;
+              border-radius: 5px;
 
               &:first-child {
                 background-color: #5271ff;

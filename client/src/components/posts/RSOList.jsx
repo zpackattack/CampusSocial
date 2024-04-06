@@ -2,10 +2,13 @@ import Post from "../post/Post";
 import "./posts.scss";
 import { useQuery } from "@tanstack/react-query";
 import { makeRequest } from "../../axios";
+import { AuthContext, useContext } from "../../context/authContext";
+import RSOListElement from "../post/RSOListElement";
 
-const RSOPosts = ({rsoID}) => {
+const RSOList = ({query, universityID}) => {
+  //const { currentUser } = useContext(AuthContext);
   const { isLoading, error, data } = useQuery(["rsoevent"], () =>
-    makeRequest.get("/event/rso/"+ rsoID).then((res) => {
+    makeRequest.get(query+ universityID).then((res) => {
       console.log(res.data);
       return res.data;
     })
@@ -17,9 +20,9 @@ const RSOPosts = ({rsoID}) => {
         ? "Something went wrong!"
         : isLoading
         ? "loading"
-        : data.map((event) => <Post post={event} key={event.eventID} />)}
+        : data.map((event) => <RSOListElement rso={event} key={event.eventID} />)}
     </div>
   );
 };
 
-export default RSOPosts;
+export default RSOList;

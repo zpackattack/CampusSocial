@@ -16,6 +16,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import Update from "../../components/update/Update";
 import { useState } from "react";
+import RSOList from "../../components/posts/RSOList";
 
 const University = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -107,7 +108,7 @@ const University = () => {
               </div>
               
             </div>
-                                {/*<Posts userId={userId} />*/}
+            <RSOList query="/rso/getUniversityRSOs/" universityID={universityId} />
           </div>
         </>
       )}

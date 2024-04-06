@@ -17,18 +17,34 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import Update from "../../components/update/Update";
 import { useState } from "react";
+import UpdateRSO from "../../components/update/UpdateRSO";
+import UpdateForm from "../../components/update/updateForm";
+import { Modal } from "@mui/material";
+import CreateRSOEvent from "../../components/update/CreateRSOEvent";
+import RSOPosts from "../../components/posts/RSOPosts";
 
 const RSO = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const [joined, setJoined] = useState(false);
   const queryClient = useQueryClient(); 
+  const [openUpdateModal, setOpenUpdateModal] = useState(false); // State to manage modal visibility
+
+  const handleOpenModal = () => {
+    setOpenUpdateModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenUpdateModal(false);
+  };
 
   const rsoID = parseInt(useLocation().pathname.split("/")[2]);
 
   const { isLoading, error, data } = useQuery(["rso"], () =>
     makeRequest.get("/rso/" + rsoID).then((res) => {
-      
+      console.log("rso", res.data[0]);
+      console.log(currentUser.userID);
       return res.data;
     })
   );
@@ -46,7 +62,7 @@ const RSO = () => {
     ["memCount"],
     () =>
       makeRequest.get("rso/memberCount/"+rsoID).then((res) => {
-        console.log("rso", res.data.count);
+        
         return res.data.count;
       })
   );
@@ -134,10 +150,14 @@ const handleAdd = () => {
                     <PersonIcon />
                     <span>{memberCount}</span>
                   </div>
+                  <div className="button-container">
                 {rIsLoading ? (
                   "loading"
                 ) : data[0].adminID === currentUser.userID ? (
-                  <button onClick={() => setOpenUpdate(true)}>update</button>
+                  <>
+                  <button onClick={() => setOpenUpdate(true)}>Update</button>
+                  <button onClick={() => setOpenCreate(true)}>Create Event</button>
+                  </>
                 ) : (
                   <button onClick={handleAdd}>
                     {joined
@@ -145,16 +165,31 @@ const handleAdd = () => {
                       : "Join"}
                   </button>
                 )}
+                </div>
                 {/*<span>{data.description}</span>*/}
               </div>
 
               
             </div>
-                                {/*<Posts userId={userId} />*/}
+            <RSOPosts rsoID={data[0].rsoID} />
           </div>
         </>
       )}
-      {openUpdate && <Update setOpenUpdate={setOpenUpdate} user={data} />}
+      {openUpdate && <UpdateRSO setOpenUpdate={setOpenUpdate} rso={data} />}
+      <div className="parent-container">
+      {openCreate && <CreateRSOEvent setOpenCreate={setOpenCreate} rso={data[0].rsoID} />}
+      </div>
+      {/*<Modal
+        isOpen={openUpdateModal}
+        onRequestClose={handleCloseModal}
+        contentLabel="Update RSO Modal"
+      >
+        <h2>Update RSO Information</h2>
+        {data && (
+          <UpdateForm handleCloseModal={handleCloseModal} rso={data} />
+        )}
+      </Modal>
+      */}
     </div>
   );
 };

@@ -70,7 +70,6 @@ export const createEvent = (req, res) => {
     });
 }
 
-
 export const getEvents = (req, res) => {
     const { userID } = req.query;
 
@@ -104,6 +103,7 @@ export const getEvents = (req, res) => {
         res.json(results);
     });
 }
+
 export const editEvent = (req, res) => {
     const {
         eventID,
@@ -200,7 +200,8 @@ export const getRSOEvents = (req, res) => {
 
         // Extract eventIDs from results
         const eventIDs = results.map(result => result.eventID);
-
+        console.log(results);
+        if(results.lenght > 0){
         // SQL query to get events using the extracted eventIDs
         const eventQuery = `
             SELECT *
@@ -217,5 +218,9 @@ export const getRSOEvents = (req, res) => {
 
             res.json(eventResults);
         });
+    }
+    else{
+        res.json(results);
+    }
     });
 };
