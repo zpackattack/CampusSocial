@@ -31,14 +31,18 @@ const RSOListElement = ({ rso }) => {
   const queryClient = useQueryClient(); 
 
   const { currentUser } = useContext(AuthContext);
-  const { isLoading: rIsLoading, data: relationshipData } = useQuery(
-    ["following"],
-    () =>
-      makeRequest.get("rso/checkUserInRSO/" + currentUser.userID +"/"+rso.rsoID).then((res) => {
-        setJoined(res.data.isMember);
-        return res.data.isMember;
-      })
-  );
+  
+
+  const fetchJoined = async () => {
+    try {
+      const res = await makeRequest.get("/rso/checkUserInRSO/" + currentUser.userID +"/"+rso.rsoID);
+      console.log("joined " + res.data);
+      setJoined(res.data.isMember);
+    } catch (error) {
+      console.error("Error fetching joined:", error);
+      setJoined(false); 
+    }
+  };
 
   const fetchMemCount = async () => {
     try {
@@ -52,7 +56,11 @@ const RSOListElement = ({ rso }) => {
 
   useEffect(() => {
     fetchMemCount();
+    fetchJoined();
+    
   }, [rso.rsoID]);
+
+
 
   const joinRSO = useMutation((rsoID) =>
   makeRequest.post("/rso/addMembers", {
@@ -61,7 +69,7 @@ const RSOListElement = ({ rso }) => {
   }),
   {
     onSuccess: () => {
-      queryClient.invalidateQueries(["memCount"]);
+      fetchMemCount();
       console.log("user un-added from rso");
     },
   }
@@ -71,7 +79,7 @@ const leaveRSO = useMutation(
   () => makeRequest.delete(`/rso/deleteMember/${currentUser.userID}/${rso.rsoID}`),
   {
     onSuccess: () => {
-      queryClient.invalidateQueries(["memCount"]);
+      fetchMemCount();
       console.log("user un-added from rso");
     },
   }

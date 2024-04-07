@@ -21,6 +21,7 @@ import RSO from "./pages/profile/RSO";
 import RSOPage from "./pages/home/RSOPage";
 import JoinedRSO from "./pages/home/JoinedRSO";
 import CreateRSORequest from "./pages/RSO/CreateNewRSO";
+import YourRSORequests from "./pages/RSO/YourRSORequests";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -90,6 +91,10 @@ function App() {
         {
           path: "/createRSO",
           element: <CreateRSORequest />,
+        },
+        {
+          path: "/yourRSORequests",
+          element: <YourRSORequests />,
         },
       ],
     },

@@ -344,3 +344,83 @@ export const createRSORequest = async (req, res) => {
         return res.status(500).json(error);
     }
 };
+
+
+export const getUsersRSORequest = async (req, res) => {
+    try {
+        // Get the userID from request parameters
+        const { userID } = req.params;
+    
+        // SQL query to fetch RSO requests sorted by status
+        const query = `SELECT * FROM rsorequests WHERE userID = ? ORDER BY status;`;
+    
+        // Execute the query
+        db.query(query, [userID], (error, results) => {
+          if (error) {
+            console.error('Error executing MySQL query:', error);
+            return res.status(500).json({ error: 'Internal server error' });
+          }
+    
+          // Send the sorted RSO requests in the response
+          res.json(results);
+        });
+      } catch (error) {
+        console.error('Error fetching RSO requests:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+};
+
+
+export const getRSORequest = async (req, res) => {
+    const query = `
+    SELECT 
+      rsorequests.*, 
+      users.name AS user_name, 
+      users.username 
+    FROM 
+      rsorequests 
+    INNER JOIN 
+      users ON rsorequests.userID = users.userID
+    WHERE 
+      rsorequests.status = 0
+  `;
+
+  db.query(query, (error, results) => {
+    if (error) {
+      console.error('Error executing MySQL query:', error);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+
+    res.json(results);
+  });
+};
+
+export const setRSORequestStatus = (req, res) => {
+    const { requestID, status } = req.body;
+    console.log(requestID + " " + status);
+  
+    if (!requestID || !status) {
+      return res.status(400).json({ error: 'RequestID and status are required' });
+    }
+  
+    const query = `
+    UPDATE rsorequests
+    SET status = ?
+    WHERE requestID = ?
+    `;
+  
+    db.query(query, [status, requestID], (error, results) => {
+      if (error) {
+        console.error('Error executing MySQL query:', error);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+  
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: 'RSO request not found' });
+      }
+  
+      res.json({ message: 'RSO request status updated successfully' });
+    });
+  };
