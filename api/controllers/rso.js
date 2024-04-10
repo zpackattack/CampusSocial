@@ -372,6 +372,8 @@ export const getUsersRSORequest = async (req, res) => {
 
 
 export const getRSORequest = async (req, res) => {
+    const { universityID } = req.params;
+    console.log(universityID);
     const query = `
     SELECT 
       rsorequests.*, 
@@ -382,10 +384,10 @@ export const getRSORequest = async (req, res) => {
     INNER JOIN 
       users ON rsorequests.userID = users.userID
     WHERE 
-      rsorequests.status = 0
+      rsorequests.status = 0 AND rsorequests.universityID = ?
   `;
 
-  db.query(query, (error, results) => {
+  db.query(query, [universityID], (error, results) => {
     if (error) {
       console.error('Error executing MySQL query:', error);
       res.status(500).json({ error: 'Internal server error' });
@@ -397,8 +399,9 @@ export const getRSORequest = async (req, res) => {
 };
 
 export const setRSORequestStatus = (req, res) => {
+    console.log("TEST");
     const { requestID, status } = req.body;
-    console.log(requestID + " " + status);
+    
   
     if (!requestID || !status) {
       return res.status(400).json({ error: 'RequestID and status are required' });
@@ -413,6 +416,7 @@ export const setRSORequestStatus = (req, res) => {
     db.query(query, [status, requestID], (error, results) => {
       if (error) {
         console.error('Error executing MySQL query:', error);
+        console.log(req.body);
         res.status(500).json({ error: 'Internal server error' });
         return;
       }
@@ -423,4 +427,4 @@ export const setRSORequestStatus = (req, res) => {
   
       res.json({ message: 'RSO request status updated successfully' });
     });
-  };
+};

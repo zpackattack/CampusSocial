@@ -77,10 +77,12 @@ const LeftBar = () => {
             <span>Your RSO Requests</span>
           </div>
           </Link>
+          <Link to={`/RSORequests`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
             <img src={Gallery} alt="" />
             <span>RSO Request Portal</span>
           </div>
+          </Link>
           <div className="item">
             <img src={Videos} alt="" />
             <span>University Request Portal</span>
