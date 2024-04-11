@@ -93,7 +93,7 @@ const University = () => {
                 <div className="info">
                   <div className="item">
                     <PlaceIcon />
-                    <span>{data.location}</span>
+                    <span>{data.locationID}</span>
                   </div>
                   <div className="item">
                     <LanguageIcon />

@@ -20,7 +20,7 @@ export const updateUser = (req, res) => {
     if (err) return res.status(403).json("Token is not valid!");
 
     const q =
-      "UPDATE users SET `name`=?,`city`=?,`website`=?,`profilePic`=?,`coverPic`=? WHERE id=? ";
+      "UPDATE users SET `name`=?,`city`=?,`website`=?,`profilePic`=?,`coverPic`=? WHERE userID=? ";
 
     db.query(
       q,
@@ -30,7 +30,7 @@ export const updateUser = (req, res) => {
         req.body.website,
         req.body.coverPic,
         req.body.profilePic,
-        userInfo.id,
+        userInfo.userID,
       ],
       (err, data) => {
         if (err) res.status(500).json(err);
@@ -39,4 +39,26 @@ export const updateUser = (req, res) => {
       }
     );
   });
+};
+
+
+export const premoteUser = (req, res) => {
+  const { userID, userType } = req.body;
+  
+    const q =
+      "UPDATE users SET `userType`=? WHERE userID=? ";
+
+    db.query(
+      q,
+      [
+        userType,
+        userID
+      ],
+      (err, data) => {
+        if (err) res.status(500).json(err);
+        if (data.affectedRows > 0) return res.json("Updated!");
+        return res.status(403).json("You can update only your post!");
+      }
+    );
+
 };

@@ -119,7 +119,9 @@ const leaveRSO = useMutation(
           </div>
           </Link>
           
-          <button onClick={handleAdd}>
+          <button onClick={handleAdd} style={joined ? {
+        "background-color": "#f0544f"
+      } : {"background-color": "#5271ff"}}>
                     {joined
                       ? "Leave"
                       : "Join"}

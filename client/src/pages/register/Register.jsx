@@ -83,14 +83,19 @@ const Register = () => {
         <div className="left">
           <h1>Campus Social.</h1>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero cum,
-            alias totam numquam ipsa exercitationem dignissimos, error nam,
-            consequatur.
+            Don't wait to join the all you can club hub for RSO's in your college. Register today!
           </p>
           <span>Do you have an account?</span>
           <Link to="/login">
             <button>Login</button>
           </Link>
+
+          <div style={{ textAlign: "center" }}>
+            <Link to="/createUniversity" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <h3>To apply to create a university, click here</h3>
+            </Link>
+          </div>
+          
         </div>
         <div className="right">
           <h1>Register</h1>
@@ -123,7 +128,10 @@ const Register = () => {
             <button onClick={handleClick}>Register</button>
           </form>
         </div>
+        
       </div>
+      
+
     </div>
   );
 };

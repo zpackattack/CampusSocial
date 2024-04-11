@@ -23,6 +23,7 @@ import JoinedRSO from "./pages/home/JoinedRSO";
 import CreateRSORequest from "./pages/RSO/CreateNewRSO";
 import YourRSORequests from "./pages/RSO/YourRSORequests";
 import ApproveRSORequests from "./pages/RSO/rsoRequestPortal";
+import CreateUniversity from "./pages/register/CreateUniversity";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -101,6 +102,10 @@ function App() {
           path: "/RSORequests",
           element: <ApproveRSORequests />,
         },
+        {
+          path: "/UniversityRequests",
+          element: <ApproveRSORequests />,
+        },
       ],
     },
     {
@@ -110,6 +115,10 @@ function App() {
     {
       path: "/register",
       element: <Register />,
+    },
+    {
+      path: "/createUniversity",
+      element: <CreateUniversity />,
     },
   ]);
 

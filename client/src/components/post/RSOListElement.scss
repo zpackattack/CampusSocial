@@ -8,7 +8,7 @@
     border-radius: 20px;
     background-color: themed("bg");
     color: themed("textColor");
-
+    
     .container {
       padding: 20px;
 
@@ -79,6 +79,7 @@
           font-size: 14px;
         }
       }
+      
       .buttons {
         display: flex;
         align-items: center;
@@ -90,11 +91,9 @@
           color: white;
           cursor: pointer;
           border-radius: 5px;
-
-          &:first-child {
-            background-color: #5271ff;
-          }
+          background-color: #5271ff;
         }
+        
       }
     }
   }
