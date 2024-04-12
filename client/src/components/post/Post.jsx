@@ -76,48 +76,7 @@ const Post = ({ post }) => {
 
     fetchCommentCount();
   }, [post.eventID]);
-  //const queryClient = useQueryClient();
-
-  /*const { isLoading, error, data } = useQuery(["likes", post.id], () =>
-    makeRequest.get("/likes?postId=" + post.id).then((res) => {
-      return res.data;
-    })
-  );
-
   
-
-  const mutation = useMutation(
-    (liked) => {
-      if (liked) return makeRequest.delete("/likes?postId=" + post.id);
-      return makeRequest.post("/likes", { postId: post.id });
-    },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries(["likes"]);
-      },
-    }
-  );
-  const deleteMutation = useMutation(
-    (postId) => {
-      return makeRequest.delete("/posts/" + postId);
-    },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries(["posts"]);
-      },
-    }
-  );
-
-  const handleLike = () => {
-    mutation.mutate(data.includes(currentUser.userID));
-  };
-
-  const handleDelete = () => {
-    deleteMutation.mutate(post.eventID);
-  };
-*/
   const recallAllAPIs = async () => {
     try {
       await Promise.all([

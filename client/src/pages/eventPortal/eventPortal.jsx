@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { makeRequest } from '../../axios';
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
+import moment from "moment";
 import './eventPortal.scss';
 
 const EventPortal = () => {
   const { currentUser } = useContext(AuthContext);
   const [requests, setRequests] = useState([]);
-  const [memberEmails, setMemberEmails] = useState({});
+
 
 
   const fetchEventRequests = async () => {
     try {
-      const response = await makeRequest.get('/event/getApprovalEvents/2');
+      const response = await makeRequest.get('/event/getApprovalEvents/0');
       setRequests(response.data);
       
     } catch (error) {
@@ -29,60 +30,35 @@ const EventPortal = () => {
   
   const handleApprove = async (request) => {
     const body = {
-      requestID: request.requestID,
+      eventID: request.eventID,
       status: 2
     };
 
-    const rsoBody = {
-      name: request.rsoName,
-      adminID: request.userID,
-      universityID: request.universityID,
-      profilePicture: null,
-      rsoPicture: null
-    };
-    const premotion = {
-      userID: request.userID,
-      userType: 1
-    }
-    console.log(rsoBody);
-
     try {
-      const rsoResponse = await makeRequest.post(`/rso/`, rsoBody);
-      const rsoID = rsoResponse.data.rsoID;
-      await makeRequest.put(`/rso/setRSO`, body);
-      await makeRequest.put(`/users/premote`, premotion);
-
-      for (const member of memberEmails[request.requestID]) {
-        const userID = member.userID;
-
-        const memberBody = {
-            userID,
-            rsoID
-        };
-        
-        await makeRequest.post('/rso/addMembers', memberBody);
-    }
+      
+      await makeRequest.put(`/event/setStatus`, body);
+      
 
 
     fetchEventRequests();
     } catch (error) {
-      console.error('Error approving RSO request:', error);
+      console.error('Error approving Event request:', error);
     }
   };
 
   // Function to handle denial of RSO request
   const handleDeny = async (request) => {
     const body = {
-      requestID: request.requestID,
+      eventID: request.eventID,
       status: 1
     };
 
     try {
-      await makeRequest.put(`/rso/setRSO`, body);
+      await makeRequest.put(`/event/setStatus`, body);
 
       fetchEventRequests();
     } catch (error) {
-      console.error('Error denying RSO request:', error);
+      console.error('Error denying event request:', error);
     }
   };
 
@@ -105,7 +81,7 @@ const EventPortal = () => {
             <tr key={request.eventID}>
               <td>{request.name}</td>
               <td>{request.descriptions}</td>
-              <td>{`${request.date} (${request.time})`}</td>
+              <td>{`${moment(request.date).format("MMMM DD, YYYY")} (${moment(request.time, "HH:mm:ss").format("hh:mm A")})`}</td>
               <td>{request.locationID}</td>
               <td>{`${request.contactPhone} (${request.contactEmail})`}</td>
               
