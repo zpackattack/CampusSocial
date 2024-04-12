@@ -83,10 +83,12 @@ const LeftBar = () => {
             <span>RSO Request Portal</span>
           </div>
           </Link>
+          <Link to={`/UniversityRequests`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
             <img src={Videos} alt="" />
             <span>University Request Portal</span>
           </div>
+          </Link>
         </div>
         
       </div>

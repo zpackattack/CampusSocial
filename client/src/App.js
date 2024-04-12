@@ -24,6 +24,9 @@ import CreateRSORequest from "./pages/RSO/CreateNewRSO";
 import YourRSORequests from "./pages/RSO/YourRSORequests";
 import ApproveRSORequests from "./pages/RSO/rsoRequestPortal";
 import CreateUniversity from "./pages/register/CreateUniversity";
+import UniversityRequestPortal from "./pages/university/UniversityRequestPortal";
+import EventPortal from "./pages/eventPortal/eventPortal";
+
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -99,12 +102,16 @@ function App() {
           element: <YourRSORequests />,
         },
         {
+          path: "/EventPortal",
+          element: <EventPortal />,
+        },
+        {
           path: "/RSORequests",
           element: <ApproveRSORequests />,
         },
         {
           path: "/UniversityRequests",
-          element: <ApproveRSORequests />,
+          element: <UniversityRequestPortal />,
         },
       ],
     },

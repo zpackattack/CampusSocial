@@ -17,10 +17,11 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
     date: "2024-04-28",
     contactPhone: 9046258869,
     contactEmail: "T@test.com",
-    eventType: "Public",
+    eventType: "RSO",
     locationName: "",
     longitude: -73.965355,
-    latitude: 40.782864
+    latitude: 40.782864,
+    status: 2
   });
 
   const upload = async (file) => {
@@ -158,6 +159,16 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
             name="name"
             onChange={handleChange}
           />
+          <label>Event Type</label>
+          <select
+            name="eventType"
+            value={texts.eventType}
+            onChange={handleChange}
+          >
+            <option value="RSO">RSO</option>
+            <option value="Private">Private</option>
+            <option value="Public">Public</option>
+          </select>
           <label>Category</label>
           <input
             type="text"

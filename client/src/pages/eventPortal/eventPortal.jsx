@@ -2,41 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { makeRequest } from '../../axios';
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
-import './rsoRequestPortal.scss';
+import './eventPortal.scss';
 
-const ApproveRSORequests = () => {
+const EventPortal = () => {
   const { currentUser } = useContext(AuthContext);
   const [requests, setRequests] = useState([]);
   const [memberEmails, setMemberEmails] = useState({});
 
 
-  const fetchRSORequests = async () => {
+  const fetchEventRequests = async () => {
     try {
-      const response = await makeRequest.get('/rso/getRSORequest/' + currentUser.universityID);
+      const response = await makeRequest.get('/event/getApprovalEvents/2');
       setRequests(response.data);
-      response.data.forEach(request => {
-        fetchMemberEmails(request.requestID);
-      });
+      
     } catch (error) {
-      console.error('Error fetching RSO requests:', error);
+      console.error('Error fetching Event requests:', error);
     }
   };
 
-  const fetchMemberEmails = async (requestID) => {
-    try {
-      const response = await makeRequest.get(`/rso/getRSORequestOther/${requestID}`);
-      setMemberEmails((prev) => ({
-        ...prev,
-        [requestID]: response.data,
-      }));
-    } catch (error) {
-      console.error('Error fetching member emails:', error);
-    }
-  };
 
   
   useEffect(() => {
-    fetchRSORequests();
+    fetchEventRequests();
   }, []);
 
   
@@ -77,7 +64,7 @@ const ApproveRSORequests = () => {
     }
 
 
-      fetchRSORequests();
+    fetchEventRequests();
     } catch (error) {
       console.error('Error approving RSO request:', error);
     }
@@ -93,38 +80,35 @@ const ApproveRSORequests = () => {
     try {
       await makeRequest.put(`/rso/setRSO`, body);
 
-      fetchRSORequests();
+      fetchEventRequests();
     } catch (error) {
       console.error('Error denying RSO request:', error);
     }
   };
 
   return (
-    <div className="rsoRequestPortal">
-      <h1>Approve or Deny RSO Requests</h1>
+    <div className="eventPortal">
+      <h1>Public Event Requests</h1>
       <table>
         <thead>
           <tr>
-            <th>RSO Name</th>
+            <th>Event Name</th>
             <th>Description</th>
-            <th>Admin</th>
-            <th>Other Members</th>
+            <th>Date/Time</th>
+            <th>Location</th>
+            <th>Contact Info</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {requests.map((request) => (
-            <tr key={request.id}>
-              <td>{request.rsoName}</td>
-              <td>{request.description}</td>
-              <td>{`${request.user_name} (${request.username})`}</td>
-              <td>
-                {memberEmails[request.requestID]
-                  ? memberEmails[request.requestID].map((member) => (
-                    <div key={member.userID}>{`${member.name} (${member.username})`}</div>
-                    ))
-                  : 'Loading...'}
-              </td>
+            <tr key={request.eventID}>
+              <td>{request.name}</td>
+              <td>{request.descriptions}</td>
+              <td>{`${request.date} (${request.time})`}</td>
+              <td>{request.locationID}</td>
+              <td>{`${request.contactPhone} (${request.contactEmail})`}</td>
+              
               <td>
                 <button  className="approve" onClick={() => handleApprove(request)}>Approve</button>
                 <button  className="deny" onClick={() => handleDeny(request)}>Deny</button>
@@ -137,4 +121,4 @@ const ApproveRSORequests = () => {
   );
 };
 
-export default ApproveRSORequests;
+export default EventPortal;

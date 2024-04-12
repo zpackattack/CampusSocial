@@ -1,0 +1,54 @@
+@import "../../style.scss";
+
+.rsoRequestPortal {
+   /* In rsoRequestPortal.scss */
+
+table {
+    border-collapse: collapse;
+    border: 1px solid black;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+  }
+  
+  thead {
+    background-color: #f5f5f5;
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  button.approve {
+    width: 50%;
+    padding: 10px;
+    border: none;
+    background-color: #5271ff;
+    align-self: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  button.deny {
+    width: 50%;
+    padding: 10px;
+    border: none;
+    background-color: #f0544f;
+    align-self: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    opacity: 0.9;
+  }
+  
+}
+

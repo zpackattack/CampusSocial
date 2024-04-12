@@ -24,10 +24,10 @@ export const createRSO = (req, res) => {
         db.query(rsoQuery, [rsoValues], (err, rsoData) => {
             if (err) return res.status(500).json(err);
 
-            const rsoID = rsoData.insertId; // Assuming 'insertId' gives the ID of the newly inserted RSO
+            const rsoID = rsoData.insertId; 
             const memberValues = [
-                req.body.adminID, // adminID
-                rsoID, // rsoID
+                req.body.adminID, 
+                rsoID, 
             ];
 
             const memberQuery =
@@ -35,7 +35,7 @@ export const createRSO = (req, res) => {
 
             db.query(memberQuery, [memberValues], (err, memberData) => {
                 if (err) return res.status(500).json(err);
-                return res.status(200).json("RSO and admin member created.");
+                return res.status(200).json({ message: "RSO and admin member created.", rsoID });
             });
         });
     });
@@ -427,4 +427,26 @@ export const setRSORequestStatus = (req, res) => {
   
       res.json({ message: 'RSO request status updated successfully' });
     });
+};
+
+
+export const getRSORequestOthers = async (req, res) => {
+    const { requestID } = req.params;
+
+    const query = `
+    SELECT Users.userID, Users.name, Users.username
+    FROM rsorequestother
+    JOIN Users ON rsorequestother.userID = Users.userID
+    WHERE rsorequestother.requestID = ?
+  `;
+
+  db.query(query, [requestID], (error, results) => {
+    if (error) {
+      console.error('Error executing MySQL query:', error);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+
+    res.json(results);
+  })
 };

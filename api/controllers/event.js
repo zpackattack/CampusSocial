@@ -22,7 +22,7 @@ export const createEvent = (req, res) => {
         const locationID = locationRes.insertId;
 
         const query = `
-            INSERT INTO events (name, category, descriptions, time, date, locationID, contactPhone, contactEmail, eventType)
+            INSERT INTO events (name, category, descriptions, time, date, locationID, contactPhone, contactEmail, eventType, status)
             VALUES (?)
         `;
 
@@ -36,6 +36,7 @@ export const createEvent = (req, res) => {
             req.body.contactPhone,
             req.body.contactEmail,
             req.body.eventType,
+            req.body.status
         ];
 
         db.query(query, [values1], (error, results) => {
@@ -67,6 +68,23 @@ export const createEvent = (req, res) => {
                 res.status(201).json({ message: 'Event created' });
             }
         });
+    });
+}
+
+export const getPublicEventsApproval = (req, res) => {
+    const {status} = req.params;
+    const query = `
+    SELECT *
+    FROM Events
+    WHERE EventType = 'Public' AND Status = ?
+    `
+    db.query(query, [status], (error, results) => {
+        if (error) {
+            console.error('Error executing MySQL query: ' + error);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(results);
     });
 }
 
