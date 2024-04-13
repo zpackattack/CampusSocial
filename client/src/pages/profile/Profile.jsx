@@ -16,10 +16,12 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import Update from "../../components/update/Update";
 import { useState } from "react";
+import CreateEvent from "../../components/update/CreateEvent";
 
 const Profile = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const { currentUser } = useContext(AuthContext);
+  const [openCreate, setOpenCreate] = useState(false);
 
 
   const { isLoading, error, data } = useQuery(["user"], () =>
@@ -50,45 +52,26 @@ const Profile = () => {
           </div>
           <div className="profileContainer">
             <div className="uInfo">
-              <div className="left">
-                <a href="http://facebook.com">
-                  <FacebookTwoToneIcon fontSize="large" />
-                </a>
-                <a href="http://facebook.com">
-                  <InstagramIcon fontSize="large" />
-                </a>
-                <a href="http://facebook.com">
-                  <TwitterIcon fontSize="large" />
-                </a>
-                <a href="http://facebook.com">
-                  <LinkedInIcon fontSize="large" />
-                </a>
-                <a href="http://facebook.com">
-                  <PinterestIcon fontSize="large" />
-                </a>
-              </div>
+              
               <div className="center">
                 <span>{data.name}</span>
                 <div className="info">
-                  <div className="item">
-                    <PlaceIcon />
-                    <span>{data.city}</span>
-                  </div>
-                  <div className="item">
-                    <LanguageIcon />
-                    <span>{data.website}</span>
-                  </div>
+                  {data.userID === currentUser.userID ? (
+                    <>
+                    <div className="item">
+                    <button onClick={() => setOpenUpdate(true)}>update</button>
+                    </div>
+                    <div className="item">
+                    <button onClick={() => setOpenCreate(true)}>Create Event</button>
+                    </div>
+                    </>
+                  ):(
+                    <span></span>
+                  )}
+                  
                 </div>
-                {data.userID === currentUser.userID ? (
-                  <button onClick={() => setOpenUpdate(true)}>update</button>
-                ):(
-                  <span></span>
-                )}
                 
-              </div>
-              <div className="right">
-                <EmailOutlinedIcon />
-                <MoreVertIcon />
+                
               </div>
             </div>
             <Posts userId={currentUser.userID} />
@@ -96,6 +79,7 @@ const Profile = () => {
         </>
       )}
       {openUpdate && <Update setOpenUpdate={setOpenUpdate} user={data} />}
+      {openCreate && <CreateEvent setOpenCreate={setOpenCreate} />}
     </div>
   );
 };

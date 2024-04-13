@@ -42,7 +42,7 @@ const RightBar = () => {
             ? "loading"
             : data.map((r) => (
                 <div className="user" key={r.rsoID}>
-                  <Link to={`/rso/${r.rsoID}`} className="userInfo" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Link to={`/rso/${r.rsoID}`} className="userInfo" style={{ textDecoration: 'none', color: 'inherit' }} reloadDocument >
                   <div className="userInfo">
                   {r.rsoPicture ? (
                     <img src={r.profilePicture} alt="" className="cover" />

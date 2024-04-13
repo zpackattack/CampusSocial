@@ -7,6 +7,7 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import PublicIcon from '@mui/icons-material/Public';
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
 import { useState, useEffect  } from "react";
@@ -103,11 +104,11 @@ const Post = ({ post }) => {
             </div>
             
           </div>
-          
-          {/*<MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
-          {menuOpen && post.userId === currentUser.id && (
-            <button onClick={handleDelete}>delete</button>
-          )}*/}
+          {post.posterID === currentUser.userID && (
+          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />)}
+          {menuOpen && post.posterID === currentUser.userID && (
+            <button onClick={fetchCommentCount()}>delete</button>
+          )}
         </div>
         <div className="info">
         <div className="item">
@@ -140,19 +141,7 @@ const Post = ({ post }) => {
           {/*<img src={"/upload/" + post.img} alt="" />*/}
         </div>
         <div className="info">
-          {/*<div className="item">
-            {isLoading ? (
-              "loading"
-            ) : data.includes(currentUser.userID) ? (
-              <FavoriteOutlinedIcon
-                style={{ color: "red" }}
-                onClick={handleLike}
-              />
-            ) : (
-              <FavoriteBorderOutlinedIcon onClick={handleLike} />
-            )}
-            {data?.length} Likes
-          </div>*/}
+          
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
             See Comments
@@ -166,12 +155,15 @@ const Post = ({ post }) => {
             {post.contactEmail}
           </div>
           <div className="item">
-            <ShareOutlinedIcon />
             <ShareButtons event={post} />
           </div>
           <div className="item">
             <Rating name="half-rating-read" value={averageRating} precision={0.5} readOnly />
             <p>({commentCount})</p>
+          </div>
+          <div className="item" onClick={() => window.location.href = `mailto:${post.contactEmail}`}>
+            <PublicIcon />
+            {post.eventType}
           </div>
         </div>
         {commentOpen && <Comments postId={post.eventID} recallState={recallAllAPIs}/>}

@@ -1,5 +1,5 @@
 import express from "express";
-import { addMembers, createRSO, getUserRSOs, getUniversityRSOs, getUniversityRSOsNotMember, getRSO, checkUserInRSO, createRSORequest, deleteMemberFromRSO, countRSOMembers, updateRSO, getUniversityRSOsAll, getUsersRSORequest, getRSORequest, setRSORequestStatus, getRSORequestOthers } from "../controllers/rso.js";
+import { addMembers, createRSO, getUserRSOs, getUniversityRSOs, getUniversityRSOsNotMember, getRSO, checkUserInRSO, createRSORequest, deleteMemberFromRSO, countRSOMembers, updateRSO, getUniversityRSOsAll, getUsersRSORequest, getRSORequest, setRSORequestStatus, getRSORequestOthers, getAdminRSOs } from "../controllers/rso.js";
 
 const router = express.Router();
 router.put("/setRSO", setRSORequestStatus);
@@ -18,5 +18,6 @@ router.post("/rsoRequest", createRSORequest);
 router.get("/userRSORequests/:userID", getUsersRSORequest);
 router.get("/getRSORequest/:universityID", getRSORequest);
 router.get("/getRSORequestOther/:requestID", getRSORequestOthers);
+router.get("/getAdminRSOs/:adminID", getAdminRSOs);
 
 export default router;

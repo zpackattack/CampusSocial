@@ -61,7 +61,6 @@ export const addMembers = (req, res) => {
 export const getUserRSOs = (req, res) => {
     const userID = req.params.userID;
 
-    // SQL query to retrieve RSOs that the user is a part of
     const query = `
         SELECT R.*
         FROM rsos R
@@ -70,6 +69,28 @@ export const getUserRSOs = (req, res) => {
     `;
 
     db.query(query, [userID], (error, results) => {
+        if (error) {
+            console.error('Error executing MySQL query: ' + error);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        const rsos = results.map(result => result.name);
+        res.json(results);
+        
+    });
+}
+
+export const getAdminRSOs = (req, res) => {
+    const adminID = req.params.adminID;
+    console.log(req.params.adminID);
+
+    const query = `
+        SELECT R.*
+        FROM rsos R
+        WHERE R.adminID = ?
+    `;
+
+    db.query(query, [adminID], (error, results) => {
         if (error) {
             console.error('Error executing MySQL query: ' + error);
             res.status(500).json({ error: 'Internal server error' });

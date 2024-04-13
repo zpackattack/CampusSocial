@@ -7,22 +7,26 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 
-const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
+const CreateEvent = ({ setOpenCreate }) => {
+
+  
+  
   const { currentUser } = useContext(AuthContext);
+  const status = currentUser.userType == 3 ? 2 : 0;
   const [texts, setTexts] = useState({
     name: "",
-    rsoID: rsoID,
+    rsoID: null,
     category: "",
     description: "",
     time: "19:30:00",
     date: "2024-04-28",
     contactPhone: null,
     contactEmail: currentUser.username,
-    eventType: "RSO",
+    eventType: "Public",
     locationName: "",
     longitude: -73.965355,
     latitude: 40.782864,
-    status: 2,
+    status: status,
     posterID: currentUser.userID,
     universityID: currentUser.universityID
   });
@@ -75,7 +79,7 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
   useEffect(() => {
     
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAQiHDZunNw-NEmSJ8za2IahvcGuXg2x0w&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=&libraries=places`;
     script.defer = true;
     script.async = true;
     script.onload = initMap;
@@ -174,7 +178,6 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
             value={texts.eventType}
             onChange={handleChange}
           >
-            <option value="RSO">RSO</option>
             <option value="Private">Private</option>
             <option value="Public">Public</option>
           </select>
@@ -198,7 +201,7 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
           <input
             type="text"
             value={texts.contactPhone}
-            name="cpntactPhone"
+            name="contactPhone"
             onChange={handleChange}
             required
           />
@@ -239,4 +242,4 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
   }
 
  
-export default CreateRSOEvent;
+export default CreateEvent;

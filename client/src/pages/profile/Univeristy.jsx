@@ -17,6 +17,7 @@ import { AuthContext } from "../../context/authContext";
 import Update from "../../components/update/Update";
 import { useState } from "react";
 import RSOList from "../../components/posts/RSOList";
+import { IconBrandFacebook, IconBrandX } from '@tabler/icons-react';
 
 const University = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -24,40 +25,12 @@ const University = () => {
 
   const universityId = parseInt(useLocation().pathname.split("/")[2]);
 
-  const { isLoading, error, data } = useQuery(["user"], () =>
+  const { isLoading, error, data } = useQuery(["university"], () =>
     makeRequest.get("/university/id/" + currentUser.universityID).then((res) => {
       console.log("uni", res.data);
       return res.data[0];
     })
   );
-/*
-  const { isLoading: rIsLoading, data: relationshipData } = useQuery(
-    ["relationship"],
-    () =>
-      makeRequest.get("/relationships?followedUserId=" + userId).then((res) => {
-        return res.data;
-      })
-  );
-
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation(
-    (following) => {
-      if (following)
-        return makeRequest.delete("/relationships?userId=" + userId);
-      return makeRequest.post("/relationships", { userId });
-    },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries(["relationship"]);
-      },
-    }
-  );
-
-  const handleFollow = () => {
-    mutation.mutate(relationshipData.includes(currentUser.id));
-  };*/
 
   return (
     <div className="profile">
@@ -72,28 +45,29 @@ const University = () => {
           <div className="profileContainer">
             <div className="uInfo">
               <div className="left">
-                <a href="http://facebook.com">
-                  <FacebookTwoToneIcon fontSize="large" />
+                {data.facebook && (
+                <a href={data.facebook} target="_blank">
+                  <IconBrandFacebook size={32} />
                 </a>
-                <a href="http://facebook.com">
+                )}
+                {data.instagram && (
+                <a href={data.instagram} target="_blank">
                   <InstagramIcon fontSize="large" />
                 </a>
-                <a href="http://facebook.com">
-                  <TwitterIcon fontSize="large" />
+                )}
+                {data.twitter && (
+                <a href={data.twitter} target="_blank">
+                  <IconBrandX size={32} />
                 </a>
-                <a href="http://facebook.com">
-                  <LinkedInIcon fontSize="large" />
-                </a>
-                <a href="http://facebook.com">
-                  <PinterestIcon fontSize="large" />
-                </a>
+                )}
+                
               </div>
               <div className="center">
-                <span>{data.name}</span>
+                <h1 style={{textAlign:"center"}}>{data.name}</h1>
                 <div className="info">
                   <div className="item">
                     <PlaceIcon />
-                    <span>{data.locationID}</span>
+                    {/*<span>{data.locationID}</span>*/}
                   </div>
                   <div className="item">
                     <LanguageIcon />

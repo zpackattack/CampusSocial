@@ -157,7 +157,7 @@ const handleAdd = () => {
       )}
       {openUpdate && <UpdateRSO setOpenUpdate={setOpenUpdate} rso={data} />}
       <div className="parent-container">
-      {openCreate && <CreateRSOEvent setOpenCreate={setOpenCreate} rso={data[0].rsoID} />}
+      {openCreate && <CreateRSOEvent setOpenCreate={setOpenCreate} rsoID={data[0].rsoID} />}
       </div>
       {/*<Modal
         isOpen={openUpdateModal}

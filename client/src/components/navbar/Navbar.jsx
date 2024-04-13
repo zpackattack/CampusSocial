@@ -1,4 +1,5 @@
 import "./navbar.scss";
+import React, { useState, useEffect } from 'react';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
@@ -11,10 +12,14 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
+import { makeRequest } from '../../axios';
 
 const Navbar = () => {
   const { toggle, darkMode } = useContext(DarkModeContext);
   const { currentUser } = useContext(AuthContext);
+  const [ data, setData ] = useState()
+
+
 
   return (
     <div className="navbar">
@@ -22,7 +27,9 @@ const Navbar = () => {
         <Link to="/" style={{ textDecoration: "none" }}>
           <span>Campus Social</span>
         </Link>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
         <HomeOutlinedIcon />
+        </Link>
         {darkMode ? (
           <WbSunnyOutlinedIcon onClick={toggle} />
         ) : (
@@ -32,16 +39,17 @@ const Navbar = () => {
         <div className="search">
           <SearchOutlinedIcon />
           <input type="text" placeholder="Search..." />
-        </div>
       </div>
+      </div>
+
       <div className="right">
-        <Link to={`/profile/${currentUser.userID}`} style={{ textDecoration: "none" }}>
+        <Link to={`/profile`} style={{ textDecoration: 'none', color: 'inherit' }}>
           <PersonOutlinedIcon />
+          
         </Link>
-        <EmailOutlinedIcon />
-        <NotificationsOutlinedIcon />
+        <span>Hello, {currentUser.name}</span>
         <div className="user">
-          <span>Hello, {currentUser.name}</span>
+          
         </div>
       </div>
     </div>

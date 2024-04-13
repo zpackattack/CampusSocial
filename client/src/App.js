@@ -26,9 +26,14 @@ import ApproveRSORequests from "./pages/RSO/rsoRequestPortal";
 import CreateUniversity from "./pages/register/CreateUniversity";
 import UniversityRequestPortal from "./pages/university/UniversityRequestPortal";
 import EventPortal from "./pages/eventPortal/eventPortal";
+import YourAdminRSOs from "./pages/home/YourAdminRSOs";
+
+
 
 
 function App() {
+  
+  
   const { currentUser } = useContext(AuthContext);
 
   const { darkMode } = useContext(DarkModeContext);
@@ -100,6 +105,10 @@ function App() {
         {
           path: "/yourRSORequests",
           element: <YourRSORequests />,
+        },
+        {
+          path: "/yourAdminRSOs",
+          element: <YourAdminRSOs />,
         },
         {
           path: "/EventPortal",

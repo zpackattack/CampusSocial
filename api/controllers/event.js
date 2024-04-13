@@ -1,7 +1,24 @@
 import { db } from "../connect.js";
 
 export const createEvent = (req, res) => {
+    const checkOverlapQuery = `
+    SELECT e.eventID
+        FROM events e
+        JOIN locations l ON e.locationID = l.locationID
+        WHERE e.time = ? AND e.date = ? AND l.longitude = ? AND l.latitude = ?;
+`;
 
+// Execute the query to check for overlapping events
+db.query(checkOverlapQuery, [ req.body.time, req.body.date, req.body.longitude, req.body.latitude], (err, overlapData) => {
+    if (err) {
+        // Handle any database errors
+        return res.status(500).json({ error: "Database error" });
+    }
+
+    // If there is an overlapping event, return an error message
+    if (overlapData.length > 0) {
+        return res.status(409).json({ error: "An event is already scheduled at this time and location." });
+    }
     const q = `
             INSERT INTO locations (name, longitude, latitude)
             VALUES (?)
@@ -22,7 +39,7 @@ export const createEvent = (req, res) => {
         const locationID = locationRes.insertId;
 
         const query = `
-            INSERT INTO events (name, category, descriptions, time, date, locationID, contactPhone, contactEmail, eventType, status)
+            INSERT INTO events (name, category, descriptions, time, date, locationID, contactPhone, contactEmail, eventType, status, posterID, rsoID, universityID)
             VALUES (?)
         `;
 
@@ -36,7 +53,10 @@ export const createEvent = (req, res) => {
             req.body.contactPhone,
             req.body.contactEmail,
             req.body.eventType,
-            req.body.status
+            req.body.status,
+            req.body.posterID,
+            req.body.rsoID,
+            req.body.universityID
         ];
 
         db.query(query, [values1], (error, results) => {
@@ -47,11 +67,12 @@ export const createEvent = (req, res) => {
             }
 
             const eventID = results.insertId;
+            console.log(eventID + " " + req.body.rsoID);
 
             // Check if rsoID is not null before executing the query
             if (req.body.rsoID) {
                 const rsoEventQuery = `
-                    INSERT INTO EventRSOMembers (EventID, RSOID)
+                    INSERT INTO eventrsomembers (eventID, rsoID)
                     VALUES (?, ?)
                 `;
 
@@ -69,6 +90,7 @@ export const createEvent = (req, res) => {
             }
         });
     });
+});
 }
 
 export const getPublicEventsApproval = (req, res) => {
@@ -95,20 +117,17 @@ export const getEvents = (req, res) => {
     const query = `
         SELECT *
         FROM Events
-        WHERE EventType = 'Public'
+        WHERE EventType = 'Public' AND status = 2
         UNION
         SELECT E.*
         FROM Events E
-        JOIN EventrsoMembers R ON E.eventID = R.EventID
-        JOIN rsos M ON R.rsoID = M.rsoID
-        WHERE E.EventType = 'Private' AND M.UniversityID = (
+        WHERE E.EventType = 'Private' AND E.UniversityID = (
             SELECT UniversityID FROM Users WHERE UserID = ?
         )
         UNION
         SELECT E.*
         FROM Events E
-        JOIN EventrsoMembers M ON E.EventID = M.EventID
-        JOIN rsomembers U ON M.rsoID = U.rsoID
+        JOIN rsomembers U ON E.rsoID = U.rsoID
         WHERE E.EventType = 'RSO' AND U.UserID = ?
     `;
 
