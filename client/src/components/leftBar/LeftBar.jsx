@@ -5,27 +5,17 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { makeRequest } from '../../axios';
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 const LeftBar = () => {
 
   const { currentUser } = useContext(AuthContext);
-  const [ data, setData ] = useState()
-
-  const fetchUniversity = async () => {
-    console.log("id: "+ currentUser.universityID);
-    try {
-      const response = await makeRequest.get("/university/id/" + currentUser.universityID);
-      console.log(response.data[0]);
-      setData(response.data[0]);
-      
-    } catch (error) {
-      console.error('Error fetching Event requests:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUniversity();
-  }, []);
+  const { isLoading, error, data } = useQuery(["university"], () =>
+    makeRequest.get("/university/id/" + currentUser.universityID).then((res) => {
+      console.log("uni", res.data);
+      return res.data[0];
+    })
+  );
 
   return (
     <div className="leftBar">
@@ -39,7 +29,7 @@ const LeftBar = () => {
           </Link>
           <Link to={`/university/${currentUser.universityID}`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
-            {/*{data.logo ? (
+            {data?.logo ? (
               <>
                 <img src={data.logo} alt="" />
                 <span>University</span>
@@ -49,7 +39,7 @@ const LeftBar = () => {
                 <img src="https://cdn2.iconfinder.com/data/icons/maki/100/college-512.png" alt="" />
                 <span>University</span>
               </>
-            )}*/}
+            )}
           </div>
           </Link>
           <Link to={`/userRSOs`} style={{ textDecoration: 'none', color: 'inherit' }}> 

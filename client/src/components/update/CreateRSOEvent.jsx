@@ -75,7 +75,7 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
   useEffect(() => {
     
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAQiHDZunNw-NEmSJ8za2IahvcGuXg2x0w&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=&libraries=places`;
     script.defer = true;
     script.async = true;
     script.onload = initMap;
