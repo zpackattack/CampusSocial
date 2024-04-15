@@ -33,25 +33,29 @@ const UniversityRequestPortal = () => {
       status: 2
     };
 
-    const rsoBody = {
+    const uniBody = {
       name: request.rsoName,
-      adminID: request.userID,
-      universityID: request.universityID,
-      profilePicture: null,
-      rsoPicture: null
+      locationID: request.locationID,
+      description: request.description,
+      numberOfStudents: request.numberOfStudents,
+      pictures: request.pictures,
+      extension: request.extension,
+      instagram: request.instagram,
+      twitter: request.twitter,
+      facebook: request.facebook,
+      logo: request.logo,
+      website: request.website,
+      adminName: request.adminName,
+      adminEmail: request.adminEmail,
+      adminPassword: request.adminPassword,
     };
-    const premotion = {
-      userID: request.userID,
-      userType: 1
-    }
+
     
 
     try {
-      const rsoResponse = await makeRequest.post(`/rso/`, rsoBody);
-      const rsoID = rsoResponse.data.rsoID;
-      await makeRequest.put(`/rso/setRSO`, body);
-      await makeRequest.put(`/users/premote`, premotion);
-
+      
+      await makeRequest.post(`/university/`, body);
+      await makeRequest.put(`/university/universityRequest`, body);
 
 
       fetchUniversityRequests();
@@ -77,13 +81,15 @@ const UniversityRequestPortal = () => {
 
   return (
     <div className="UniversityRequestPortal">
+      {currentUser.userType >= 4 ?(
+        <>
       <h1>University Requests</h1>
       <table>
         <thead>
           <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Extension</th>
+            <th>Location</th>
             <th>Students</th>
             <th>Admin</th>
             <th>Actions</th>
@@ -105,6 +111,10 @@ const UniversityRequestPortal = () => {
           ))}
         </tbody>
       </table>
+      </>
+      ):(
+        <h1>You do not have access to this page. Try logging in as a mega admin to access.</h1>
+      )}
     </div>
   );
 };

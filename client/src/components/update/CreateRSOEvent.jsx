@@ -27,17 +27,7 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
     universityID: currentUser.universityID
   });
 
-  const upload = async (file) => {
-    console.log(file)
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await makeRequest.post("/upload", formData);
-      return res.data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
+
 
   const handleChange = (e) => {
     setTexts((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));

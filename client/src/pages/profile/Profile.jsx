@@ -74,7 +74,7 @@ const Profile = () => {
                 
               </div>
             </div>
-            <Posts userId={currentUser.userID} />
+            <Posts query="/event/getPosterEvents?userID=" />
           </div>
         </>
       )}

@@ -71,30 +71,38 @@ const LeftBar = () => {
             <span>Your RSO Requests</span>
           </div>
           </Link>
+          {currentUser.userType >= 1 ? (
           <Link to={`/yourAdminRSOs`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
             <img src="https://www.intertek.com/siteassets/about-us/5_44500-people_icon_RGB.png" alt="" />
             <span>Your RSOs</span>
           </div>
           </Link>
+          ):(<></>)}
+          {currentUser.userType >= 2 ? (
           <Link to={`/EventPortal`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
             <img src="https://cdn.iconscout.com/icon/free/png-256/free-event-processing-calendar-appointment-planner-schedule-reminder-6-5604.png" alt="" />
             <span>Event Portal</span>
           </div>
           </Link>
+        ):(<></>)}
+          {currentUser.userType >= 2 ? (
           <Link to={`/RSORequests`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
             <img src="https://www.jp.pima.gov/Images/Records%20Request%20Icon.png" alt="" />
             <span>RSO Request Portal</span>
           </div>
           </Link>
+          ):(<></>)}
+          {currentUser.userType >= 3 ? (
           <Link to={`/UniversityRequests`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
             <img src="https://www.jp.pima.gov/Images/Small%20Claims%20Icon.png" alt="" />
             <span>University Request Portal</span>
           </div>
           </Link>
+          ):(<></>)}
         </div>
         
       </div>

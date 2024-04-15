@@ -27,6 +27,7 @@ import CreateUniversity from "./pages/register/CreateUniversity";
 import UniversityRequestPortal from "./pages/university/UniversityRequestPortal";
 import EventPortal from "./pages/eventPortal/eventPortal";
 import YourAdminRSOs from "./pages/home/YourAdminRSOs";
+import CheckBackSoon from "./pages/register/CheckBackSoon";
 
 
 
@@ -135,6 +136,10 @@ function App() {
     {
       path: "/createUniversity",
       element: <CreateUniversity />,
+    },
+    {
+      path: "/checkBack",
+      element: <CheckBackSoon />,
     },
   ]);
 

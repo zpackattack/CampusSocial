@@ -1,4 +1,5 @@
 import { db } from "../connect.js";
+import bcrypt from "bcryptjs";
 
 export const getUniversity = (req, res) => {
   const name = req.query.name; // Get the university name from query parameters
@@ -43,43 +44,92 @@ export const getUniversityID = (req, res) => {
 };
 
 export const createUniversity = (req, res) => {
-  const { name, location, description, numberOfStudents, pictures, extension, instagram, twitter, facebook, logo, website } = req.body;
+  const { name, locationID, description, numberOfStudents, pictures, extension, instagram, twitter, facebook, logo, website, adminName, adminEmail, adminPassword} = req.body;
+  const q =
+        "INSERT INTO Users (Username, Password, UserType, UniversityID, name) VALUE (?)";
 
+      const values = [
+        adminEmail,
+        adminPassword,
+        3,
+        1,
+        adminName,
+      ];
+      console.log(req.body);
 
-  const query = `
-      INSERT INTO Universities (name, locationID, Description, numberOfStudents, pictures, ext, instagram, twitter, facebook, logo, website)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+      db.query(q, [values], (err, data) => {
+        if (err) return res.status(500).json(err);
+        const adminID = data.insertId;
 
-  db.query(query, [name, location, description, numberOfStudents, pictures, extension, instagram, twitter, facebook, logo, website], (error, results) => {
-      if (error) {
-          console.error('Error executing MySQL query: ' + error);
-          res.status(500).json({ error: 'Internal server error' });
-          return;
-      }
+      const query = `
+          INSERT INTO Universities (name, locationID, Description, numberOfStudents, pictures, ext, adminID, instagram, twitter, facebook, logo, website)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
 
-      res.status(201).json({ message: 'University created successfully' });
-  });
+      db.query(query, [name, locationID, description, numberOfStudents, pictures, extension, adminID, instagram, twitter, facebook, logo, website], (error, results) => {
+          if (error) {
+              console.error('Error executing MySQL query: ' + error);
+              res.status(500).json({ error: 'Internal server error' });
+              return;
+          }
+
+          
+          const universityID = results.insertId;
+          const qu =
+          "UPDATE users SET universityID=? WHERE userID=? ";
+
+          db.query(qu, [universityID, adminID], (error, res) => {
+            if (error) {
+                console.error('Error executing MySQL query: ' + error);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+
+            res.status(201).json({ message: 'University created successfully' });
+      });
+    });
+    });
 }
 
 export const createUniversityRequest = (req, res) => {
-  const { name, locationID, description, numberOfStudents, pictures, extension, instagram, twitter, facebook, logo, website, adminName, adminEmail, adminPassword } = req.body;
+  const { name, locationName, longitude, latitude, description, numberOfStudents, pictures, extension, instagram, twitter, facebook, logo, website, adminName, adminEmail, adminPassword } = req.body;
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(adminPassword, salt);
 
+  const q = `
+            INSERT INTO locations (name, longitude, latitude)
+            VALUES (?)
+        `;
+    const values = [
+        locationName,
+        longitude,
+        latitude,
+    ];
 
-  const query = `
-  INSERT INTO universityrequest (name, locationID, Description, numberOfStudents, pictures, ext, instagram, twitter, facebook, logo, website, status, adminName, adminEmail, adminPassword)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+    db.query(q, [values], (error, locationRes) => {
+        if (error) {
+            console.error('Error executing MySQL query: ' + error);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
 
-  db.query(query, [name, locationID, description, numberOfStudents, pictures, extension, instagram, twitter, facebook, logo, website, 0, adminName, adminEmail, adminPassword], (error, results) => {
-      if (error) {
-          console.error('Error executing MySQL query: ' + error);
-          res.status(500).json({ error: 'Internal server error' });
-          return;
-      }
+        const locationID = locationRes.insertId;
 
-      res.status(201).json({ message: 'University Request created successfully' });
-  });
+      const query = `
+      INSERT INTO universityrequest (name, locationID, Description, numberOfStudents, pictures, ext, instagram, twitter, facebook, logo, website, status, adminName, adminEmail, adminPassword)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      db.query(query, [name, locationID, description, numberOfStudents, pictures, extension, instagram, twitter, facebook, logo, website, 0, adminName, adminEmail, hashedPassword], (error, results) => {
+          if (error) {
+              console.error('Error executing MySQL query: ' + error);
+              res.status(500).json({ error: 'Internal server error' });
+              return;
+          }
+
+          res.status(201).json({ message: 'University Request created successfully' });
+      });
+    });
 }
 
 export const setUniversityRequest = (req, res) => {

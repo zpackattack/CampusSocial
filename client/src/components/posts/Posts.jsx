@@ -5,10 +5,10 @@ import { makeRequest } from "../../axios";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 
-const Posts = ({userId}) => {
+const Posts = ({query}) => {
   const { currentUser } = useContext(AuthContext);
   const { isLoading, error, data } = useQuery(["event"], () =>
-    makeRequest.get("/event/getUserEvents?userID="+ currentUser.userID).then((res) => {
+    makeRequest.get(query+ currentUser.userID).then((res) => {
       console.log(res.data);
       return res.data;
     })

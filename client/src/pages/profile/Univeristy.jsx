@@ -12,25 +12,62 @@ import Posts from "../../components/posts/Posts";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { makeRequest } from "../../axios";
 import { useLocation } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/authContext";
 import Update from "../../components/update/Update";
 import { useState } from "react";
 import RSOList from "../../components/posts/RSOList";
 import { IconBrandFacebook, IconBrandX } from '@tabler/icons-react';
+import { DarkModeContext } from "../../context/darkModeContext";
 
 const University = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const { currentUser } = useContext(AuthContext);
+  const { darkMode } = useContext(DarkModeContext);
+  const iconColor = darkMode ? 'white' : 'black';
+  const [location, setLocation] = useState(null);
+  const [admin, setAdmin] = useState(null);
 
   const universityId = parseInt(useLocation().pathname.split("/")[2]);
 
   const { isLoading, error, data } = useQuery(["university"], () =>
     makeRequest.get("/university/id/" + currentUser.universityID).then((res) => {
       console.log("uni", res.data);
+      fetchLocation();
+      fetchContact();
       return res.data[0];
     })
   );
+  
+
+  const fetchLocation = async () => {
+    try {
+      
+      const response = await makeRequest.get("/event/location?locationID=" + data.locationID);
+      const { location } = response.data;
+      console.log("location Object: " + response.data);
+      setLocation(location);
+    } catch (error) {
+      console.error("Error fetching location:", error);
+      setLocation(null); // Set default value in case of error
+    }
+  };
+
+
+
+  const fetchContact = async () => {
+    try {
+      
+      const response = await makeRequest.get("/users/" + data.adminID);
+      console.log(response.data);
+      setAdmin(response.data[0]);
+    } catch (error) {
+      console.error("Error fetching admin:", error);
+      setAdmin(null); // Set default value in case of error
+    }
+  };
+  
+  
 
   return (
     <div className="profile">
@@ -39,25 +76,33 @@ const University = () => {
       ) : (
         <>
           <div className="images">
+          {data[0]?.pictures ? (
+              <img src={data[0].pictures} alt="" className="cover" />
+            ) : (
            <img src="https://cdn.mos.cms.futurecdn.net/wtqqnkYDYi2ifsWZVW2MT4-1200-80.jpg" alt="" className="cover" />
-            {/*<img src={"/upload/"+data.profilePic} alt="" className="profilePic" />*/}
+          )}
+           {data[0]?.logo ? (
+              <img src={data[0].logo} alt="" className="profilePic" />
+            ) : (
+              <img src="https://cdn2.iconfinder.com/data/icons/maki/100/college-512.png" alt="" className="profilePic" />
+            )}
           </div>
           <div className="profileContainer">
             <div className="uInfo">
               <div className="left">
                 {data.facebook && (
                 <a href={data.facebook} target="_blank">
-                  <IconBrandFacebook size={32} />
+                  <IconBrandFacebook size={32} color={iconColor}/>
                 </a>
                 )}
                 {data.instagram && (
                 <a href={data.instagram} target="_blank">
-                  <InstagramIcon fontSize="large" />
+                  <InstagramIcon fontSize="large"/>
                 </a>
                 )}
                 {data.twitter && (
                 <a href={data.twitter} target="_blank">
-                  <IconBrandX size={32} />
+                  <IconBrandX size={32} color={iconColor}/>
                 </a>
                 )}
                 
@@ -66,19 +111,40 @@ const University = () => {
                 <h1 style={{textAlign:"center"}}>{data.name}</h1>
                 <div className="info">
                   <div className="item">
+                  {data.locationID ? (
+                    <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${location ? location.latitude: ""},${location ? location.longitude: ""}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <PlaceIcon />
-                    {/*<span>{data.locationID}</span>*/}
+                    </a>
+                  ):(
+                    <PlaceIcon />
+                  )}
                   </div>
                   <div className="item">
+                    {data.website ? (
+                      <a href={data.website}
+                      target="_blank"
+                    >
                     <LanguageIcon />
-                    {/*<span>{data.website}</span>*/}
+                    </a>
+
+                    ):(
+                      <LanguageIcon />
+                    )}
                   </div>
                 </div>
                 {/*<span>{data.description}</span>*/}
               </div>
               <div className="right">
+              {admin?.username ? (
+                <a href={'mailto:' + admin.username}>
                 <EmailOutlinedIcon />
-                <MoreVertIcon />
+                </a>
+              ):(<></>)}
+                {/*<MoreVertIcon />*/}
               </div>
               
             </div>

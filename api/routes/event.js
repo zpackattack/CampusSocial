@@ -1,11 +1,12 @@
 import express from "express";
-import { createEvent, editEvent, editLocation, getEvents, getLocation, getPublicEventsApproval, getRSOEvents, setEvent } from "../controllers/event.js";
+import { createEvent, editEvent, editLocation, getEvents, getLocation, getPublicEventsApproval, getRSOEvents, getUserEvents, setEvent } from "../controllers/event.js";
 
 
 const router = express.Router();
 
 router.post("/create", createEvent);
 router.get("/getUserEvents", getEvents);
+router.get("/getPosterEvents", getUserEvents);
 router.get("/getApprovalEvents/:status", getPublicEventsApproval);
 router.get("/location", getLocation);
 router.put("/", editEvent);

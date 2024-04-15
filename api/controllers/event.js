@@ -141,6 +141,26 @@ export const getEvents = (req, res) => {
     });
 }
 
+export const getUserEvents = (req, res) => {
+    const { userID } = req.query;
+
+    // SQL query to retrieve events and posts based on the criteria
+    const query = `
+        SELECT *
+        FROM Events
+        WHERE posterID = ? AND status = 2
+    `;
+
+    db.query(query, [userID, userID], (error, results) => {
+        if (error) {
+            console.error('Error executing MySQL query: ' + error);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(results);
+    });
+}
+
 export const editEvent = (req, res) => {
     const {
         eventID,

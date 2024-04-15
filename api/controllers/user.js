@@ -12,6 +12,28 @@ export const getUser = (req, res) => {
   });
 };
 
+export const getUsername = (req, res) => {
+  const userId = req.params.userID;
+  const q = "SELECT username FROM users WHERE userID=?";
+
+  db.query(q, [userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    
+    return res.json(data);
+  });
+};
+
+export const getUserID = (req, res) => {
+  const username = req.params.username;
+  const q = "SELECT userID FROM users WHERE username=?";
+
+  db.query(q, [username], (err, data) => {
+    if (err) return res.status(500).json(err);
+    const { password, ...info } = data[0];
+    return res.json(info);
+  });
+};
+
 export const updateUser = (req, res) => {
   const token = req.cookies.accessToken;
   if (!token) return res.status(401).json("Not authenticated!");
