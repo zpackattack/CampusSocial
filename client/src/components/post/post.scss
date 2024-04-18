@@ -76,6 +76,14 @@
           gap: 10px;
           cursor: pointer;
           font-size: 14px;
+          a {
+            color: themed("textColor");
+          
+        }
+
+        a:visited {
+          color: themed("textColor");
+        }
         }
       }
     }

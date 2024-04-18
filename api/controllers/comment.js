@@ -18,7 +18,7 @@ export const getComments = (req, res) => {
 export const getTotalCommentCount = (req, res) => {
   const { eventID } = req.params;
 
-  // SQL query to get the total count of comments for the specified eventID
+ 
   const query = `
       SELECT COUNT(*) AS totalCommentCount
       FROM EventComments
@@ -32,7 +32,6 @@ export const getTotalCommentCount = (req, res) => {
           return;
       }
 
-      // Extract the total comment count from the results
       const totalCommentCount = results[0].totalCommentCount;
 
       res.status(200).json({ totalCommentCount });
@@ -64,13 +63,9 @@ export const addComment = (req, res) => {
 
 export const deleteComment = (req, res) => {
   const token = req.cookies.access_token;
-  // if (!token) return res.status(401).json("Not authenticated!");
-
-  /* jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-  */
-    const commentId = req.query.commentID; // Change req.params to req.query
-    const userId = req.query.userID; // Change req.params to req.query
+  
+    const commentId = req.query.commentID; 
+    const userId = req.query.userID; 
     console.log(userId);
     const q = "DELETE FROM eventcomments WHERE `commentID` = ? AND `userId` = ?";
 
@@ -79,24 +74,13 @@ export const deleteComment = (req, res) => {
       if (data.affectedRows > 0) return res.json("Comment has been deleted!");
       return res.status(403).json("You can delete only your comment!");
     });
-  // });
 };
 
 
 export const editComment = (req, res) => {
   
   const { commentID, userID, rating, comment } = req.body;
-  console.log(commentID);
-  console.log(userID);
-  console.log(rating);
-  console.log(comment);
-  /*const token = req.cookies.access_token;
-  if (!token) return res.status(401).json("Not authenticated!");
 
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-  // SQL query to update the comment with the new content*/
-  //const userID = req.body.userID;
   const query = `
       UPDATE eventcomments
       SET comment = ?, rating = ?
@@ -111,21 +95,20 @@ export const editComment = (req, res) => {
       }
 
       if (results.affectedRows === 0) {
-          // No comment was updated (commentID not found)
+
           res.status(404).json({ error: 'Comment not found' });
           return;
       }
 
-      // Comment updated successfully
       res.status(200).json({ message: 'Comment updated successfully' });
   });
-//});
+
 }
 
 export const getAverageRating = (req, res) => {
   const { eventID } = req.params;
 
-  // SQL query to calculate the average rating of comments for the specified eventID
+
   const query = `
       SELECT AVG(Rating) AS averageRating
       FROM EventComments
@@ -139,9 +122,7 @@ export const getAverageRating = (req, res) => {
           return;
       }
 
-      // Extract the average rating from the results
-      const averageRating = results[0].averageRating || 0; // Set default value to 0 if there are no comments
-
+      const averageRating = results[0].averageRating || 0; 
       res.status(200).json({ averageRating });
   });
 }

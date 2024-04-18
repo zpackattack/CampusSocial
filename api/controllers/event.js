@@ -8,14 +8,14 @@ export const createEvent = (req, res) => {
         WHERE e.time = ? AND e.date = ? AND l.longitude = ? AND l.latitude = ?;
 `;
 
-// Execute the query to check for overlapping events
+
 db.query(checkOverlapQuery, [ req.body.time, req.body.date, req.body.longitude, req.body.latitude], (err, overlapData) => {
     if (err) {
-        // Handle any database errors
+        
         return res.status(500).json({ error: "Database error" });
     }
 
-    // If there is an overlapping event, return an error message
+  
     if (overlapData.length > 0) {
         return res.status(409).json({ error: "An event is already scheduled at this time and location." });
     }
@@ -69,28 +69,93 @@ db.query(checkOverlapQuery, [ req.body.time, req.body.date, req.body.longitude, 
             const eventID = results.insertId;
             console.log(eventID + " " + req.body.rsoID);
 
-            // Check if rsoID is not null before executing the query
-            if (req.body.rsoID) {
-                const rsoEventQuery = `
-                    INSERT INTO eventrsomembers (eventID, rsoID)
-                    VALUES (?, ?)
-                `;
-
-                db.query(rsoEventQuery, [eventID, req.body.rsoID], (error) => {
-                    if (error) {
-                        console.error('Error linking event to RSO: ' + error);
-                        res.status(500).json({ error: 'Internal server error' });
-                        return;
-                    }
-
-                    res.status(201).json({ message: 'Event created and linked to RSO' });
-                });
-            } else {
-                res.status(201).json({ message: 'Event created' });
-            }
+  
+            
+            res.status(201).json({ message: 'Event created' });
         });
     });
 });
+}
+
+export const createRSOEvent = (req, res) => {
+    if(req.body.adminID == req.body.userID){
+    const checkOverlapQuery = `
+    SELECT e.eventID
+        FROM events e
+        JOIN locations l ON e.locationID = l.locationID
+        WHERE e.time = ? AND e.date = ? AND l.longitude = ? AND l.latitude = ?;
+`;
+
+
+db.query(checkOverlapQuery, [ req.body.time, req.body.date, req.body.longitude, req.body.latitude], (err, overlapData) => {
+    if (err) {
+        
+        return res.status(500).json({ error: "Database error" });
+    }
+
+  
+    if (overlapData.length > 0) {
+        return res.status(409).json({ error: "An event is already scheduled at this time and location." });
+    }
+    const q = `
+            INSERT INTO locations (name, longitude, latitude)
+            VALUES (?)
+        `;
+    const values = [
+        req.body.locationName,
+        req.body.longitude,
+        req.body.latitude,
+    ];
+
+    db.query(q, [values], (error, locationRes) => {
+        if (error) {
+            console.error('Error executing MySQL query: ' + error);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+
+        const locationID = locationRes.insertId;
+
+        const query = `
+            INSERT INTO events (name, category, descriptions, time, date, locationID, contactPhone, contactEmail, eventType, status, posterID, rsoID, universityID)
+            VALUES (?)
+        `;
+
+        const values1 = [
+            req.body.name,
+            req.body.category,
+            req.body.description,
+            req.body.time,
+            req.body.date,
+            locationID,
+            req.body.contactPhone,
+            req.body.contactEmail,
+            req.body.eventType,
+            req.body.status,
+            req.body.posterID,
+            req.body.rsoID,
+            req.body.universityID
+        ];
+
+        db.query(query, [values1], (error, results) => {
+            if (error) {
+                console.error('Error executing MySQL query: ' + error);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+
+            const eventID = results.insertId;
+            console.log(eventID + " " + req.body.rsoID);
+
+  
+            res.status(201).json({ message: 'Event created' });
+            
+        });
+    });
+});
+    }else{
+        return res.status(409).json({ error: "You are not the admin of this rso!" });
+    }
 }
 
 export const getPublicEventsApproval = (req, res) => {
@@ -113,7 +178,6 @@ export const getPublicEventsApproval = (req, res) => {
 export const getEvents = (req, res) => {
     const { userID } = req.query;
 
-    // SQL query to retrieve events and posts based on the criteria
     const query = `
         SELECT *
         FROM Events
@@ -129,6 +193,7 @@ export const getEvents = (req, res) => {
         FROM Events E
         JOIN rsomembers U ON E.rsoID = U.rsoID
         WHERE E.EventType = 'RSO' AND U.UserID = ?
+        ORDER BY date ASC;
     `;
 
     db.query(query, [userID, userID], (error, results) => {
@@ -144,7 +209,6 @@ export const getEvents = (req, res) => {
 export const getUserEvents = (req, res) => {
     const { userID } = req.query;
 
-    // SQL query to retrieve events and posts based on the criteria
     const query = `
         SELECT *
         FROM Events
@@ -167,31 +231,28 @@ export const editEvent = (req, res) => {
         name,
         category,
         description,
-        time,
-        date,
-        locationID,
         contactPhone,
         contactEmail,
         eventType,
+        date,
+        time,
     } = req.body;
 
-    // SQL query to update the event
     const query = `
         UPDATE events
         SET
             name = ?,
             category = ?,
             descriptions = ?,
-            time = ?,
-            date = ?,
-            locationID = ?,
             contactPhone = ?,
             contactEmail = ?,
-            eventType = ?
+            eventType = ?,
+            date = ?,
+            time = ?
         WHERE eventID = ?
     `;
 
-    db.query(query, [name, category, description, time, date, locationID, contactPhone, contactEmail, eventType, eventID], (error, results) => {
+    db.query(query, [name, category, description, contactPhone, contactEmail, eventType,  date, time, eventID], (error, results) => {
         if (error) {
             console.error('Error executing MySQL query: ' + error);
             res.status(500).json({ error: 'Internal server error' });
@@ -209,7 +270,7 @@ export const setEvent = (req, res) => {
         status
     } = req.body;
 
-    // SQL query to update the event
+
     const query = `
         UPDATE events
         SET
@@ -226,6 +287,28 @@ export const setEvent = (req, res) => {
 
 
         res.status(200).json({ message: 'Event updated successfully' });
+    });
+}
+
+export const deleteEvent = (req, res) => {
+    const eventID = req.params.eventID;
+
+    const query = `
+    DELETE FROM events
+    WHERE eventID = ?
+    `;
+
+    db.query(query, [eventID], (error, results) => {
+        if (error) {
+            console.error('Error executing MySQL query:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        } else if (results.affectedRows === 0) {
+
+            res.status(404).json({ error: 'Event not found' });
+        } else {
+
+            res.json({ message: 'Event deleted successfully' });
+        }
     });
 }
 
@@ -269,9 +352,10 @@ export const getRSOEvents = (req, res) => {
 
     // SQL query to get eventIDs associated with the given RSO
     const query = `
-        SELECT eventID
-        FROM eventrsomembers
+        SELECT *
+        FROM events
         WHERE rsoID = ?
+        ORDER BY date ASC;
     `;
 
     db.query(query, [rsoID], (error, results) => {
@@ -280,30 +364,7 @@ export const getRSOEvents = (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
             return;
         }
-
-        // Extract eventIDs from results
-        const eventIDs = results.map(result => result.eventID);
-        console.log(results);
-        if(results.lenght > 0){
-        // SQL query to get events using the extracted eventIDs
-        const eventQuery = `
-            SELECT *
-            FROM events
-            WHERE eventID IN (?)
-        `;
-
-        db.query(eventQuery, [eventIDs], (eventError, eventResults) => {
-            if (eventError) {
-                console.error('Error executing MySQL query: ' + eventError);
-                res.status(500).json({ error: 'Internal server error' });
-                return;
-            }
-
-            res.json(eventResults);
-        });
-    }
-    else{
         res.json(results);
-    }
     });
+
 };

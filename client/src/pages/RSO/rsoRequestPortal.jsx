@@ -101,6 +101,8 @@ const ApproveRSORequests = () => {
 
   return (
     <div className="rsoRequestPortal">
+      {currentUser.userType >= 3 ?(
+        <>
       <h1>Approve or Deny RSO Requests</h1>
       <table>
         <thead>
@@ -117,15 +119,15 @@ const ApproveRSORequests = () => {
             <tr key={request.id}>
               <td>{request.rsoName}</td>
               <td>{request.description}</td>
-              <td>{`${request.user_name} (${request.username})`}</td>
-              <td>
+              <td style={{width: "20%"}}>{`${request.user_name} (${request.username})`}</td>
+              <td style={{width: "20%"}}>
                 {memberEmails[request.requestID]
                   ? memberEmails[request.requestID].map((member) => (
                     <div key={member.userID}>{`${member.name} (${member.username})`}</div>
                     ))
                   : 'Loading...'}
               </td>
-              <td>
+              <td style={{width: "20%"}}>
                 <button  className="approve" onClick={() => handleApprove(request)}>Approve</button>
                 <button  className="deny" onClick={() => handleDeny(request)}>Deny</button>
               </td>
@@ -133,6 +135,10 @@ const ApproveRSORequests = () => {
           ))}
         </tbody>
       </table>
+      </>
+      ):(
+        <h1>You do not have access to this page. Try logging in as a super admin to access.</h1>
+      )}
     </div>
   );
 };

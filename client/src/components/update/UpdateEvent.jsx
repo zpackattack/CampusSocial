@@ -7,24 +7,27 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 
-const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
+const UpdateEvent = ({ setOpenUpdate, event, location }) => {
   const { currentUser } = useContext(AuthContext);
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
   const [texts, setTexts] = useState({
-    name: "",
-    rsoID: rsoID,
-    category: "",
-    description: "",
-    time: "19:30:00",
-    date: "2024-04-28",
-    contactPhone: null,
-    contactEmail: currentUser.username,
-    eventType: "RSO",
-    locationName: "",
-    longitude: -73.965355,
-    latitude: 40.782864,
-    status: 2,
-    posterID: currentUser.userID,
-    universityID: currentUser.universityID
+    name: event.name,
+    category: event.category,
+    description: event.descriptions,
+    time: event.time,
+    date: formatDate(event.date),
+    contactPhone: event.contactPhone,
+    contactEmail: event.contactEmail,
+    eventType: event.eventType,
+    locationName: location.name,
+    longitude: location.longitude,
+    latitude: location.latitude,
   });
 
 
@@ -36,9 +39,29 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
   const queryClient = useQueryClient();
 
   const submit = async (e) => {
+    const body={
+      eventID: event.eventID,
+      name: texts.name,
+      category: texts.category,
+      description: texts.description,
+      contactPhone: texts.contactPhone,
+      contactEmail: texts.contactEmail,
+      eventType: texts.eventType,
+      date: texts.date,
+      time: texts.time
+    };
+
+    const locBody = {
+      locationID: location.locationID,
+      name: texts.locationName,
+      longitude: texts.longitude,
+      latitude: texts.latitude
+    }
+
     try {
-      
-      await makeRequest.post(`/event/create`, texts);
+      console.log(body);
+      await makeRequest.put(`/event/location`, locBody);
+      await makeRequest.put(`/event/`, body);
     } catch (error) {
       console.error("Error creating event:", error);
      
@@ -52,7 +75,7 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
     console.log("Update");
     if (form.checkValidity()) {
     submit();
-    setOpenCreate(false);
+    setOpenUpdate(false);
     queryClient.invalidateQueries(["events"]);
     }
     else{
@@ -65,7 +88,7 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
   useEffect(() => {
     
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAQiHDZunNw-NEmSJ8za2IahvcGuXg2x0w&libraries=places`;
     script.defer = true;
     script.async = true;
     script.onload = initMap;
@@ -218,10 +241,10 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
             required
           />
           <div id="map" style={{ height: "300px", width: "100%" }}></div>
-          <button type="submit" >Add</button>
+          <button type="submit" >Update</button>
         </form>
-        <button className="close" onClick={() => setOpenCreate(false)}>
-          X
+        <button className="close" onClick={() => setOpenUpdate(false)}>
+            X
         </button>
       </div>
     </div>
@@ -229,4 +252,4 @@ const CreateRSOEvent = ({ setOpenCreate, rsoID }) => {
   }
 
  
-export default CreateRSOEvent;
+export default UpdateEvent;

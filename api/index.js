@@ -3,10 +3,9 @@ const app = express();
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import universityRoutes from "./routes/university.js";
-import postRoutes from "./routes/posts.js";
+
 import commentRoutes from "./routes/comments.js";
-import likeRoutes from "./routes/likes.js";
-import relationshipRoutes from "./routes/relationships.js";
+
 import rso from "./routes/rso.js";
 import event from "./routes/event.js";
 import cors from "cors";

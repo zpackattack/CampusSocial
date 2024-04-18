@@ -9,6 +9,8 @@ import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from "../../components/posts/Posts";
+import SchoolIcon from '@mui/icons-material/School';
+import PersonIcon from '@mui/icons-material/Person';
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { makeRequest } from "../../axios";
 import { useLocation } from "react-router-dom";
@@ -17,7 +19,7 @@ import { AuthContext } from "../../context/authContext";
 import Update from "../../components/update/Update";
 import { useState } from "react";
 import RSOList from "../../components/posts/RSOList";
-import { IconBrandFacebook, IconBrandX } from '@tabler/icons-react';
+import { IconBrandFacebook, IconBrandX, IconBrandInstagram } from '@tabler/icons-react';
 import { DarkModeContext } from "../../context/darkModeContext";
 
 const University = () => {
@@ -27,6 +29,7 @@ const University = () => {
   const iconColor = darkMode ? 'white' : 'black';
   const [location, setLocation] = useState(null);
   const [admin, setAdmin] = useState(null);
+  const [rsoCount, setRSOCount] = useState(0);
 
   const universityId = parseInt(useLocation().pathname.split("/")[2]);
 
@@ -63,7 +66,18 @@ const University = () => {
       setAdmin(response.data[0]);
     } catch (error) {
       console.error("Error fetching admin:", error);
-      setAdmin(null); // Set default value in case of error
+      setAdmin(null); 
+    }
+  };
+
+  const fetchRSOCount = async () => {
+    try {
+      
+      const response = await makeRequest.get("/rso/getUniversityRSOCount/" + currentUser.universityID);
+      setRSOCount(response.data.rsoCount);
+    } catch (error) {
+      console.error("Error fetching admin:", error);
+      setRSOCount(0); 
     }
   };
   
@@ -76,15 +90,15 @@ const University = () => {
       ) : (
         <>
           <div className="images">
-          {data[0]?.pictures ? (
-              <img src={data[0].pictures} alt="" className="cover" />
+          {data?.pictures ? (
+              <img src={data.pictures} alt="" className="cover" />
             ) : (
-           <img src="https://cdn.mos.cms.futurecdn.net/wtqqnkYDYi2ifsWZVW2MT4-1200-80.jpg" alt="" className="cover" />
+           <img src="https://research.collegeboard.org/media/2022-02/iStock_000021255451_Large-780x585.jpg" alt="" className="cover" />
           )}
-           {data[0]?.logo ? (
-              <img src={data[0].logo} alt="" className="profilePic" />
+           {data?.logo ? (
+              <img src={data.logo} alt="" className="profilePic" />
             ) : (
-              <img src="https://cdn2.iconfinder.com/data/icons/maki/100/college-512.png" alt="" className="profilePic" />
+              <img src="https://w7.pngwing.com/pngs/72/570/png-transparent-teachers-college-columbia-university-academic-degree-student-course-graduation-people-university-higher-education.png" alt="" className="profilePic" />
             )}
           </div>
           <div className="profileContainer">
@@ -96,8 +110,8 @@ const University = () => {
                 </a>
                 )}
                 {data.instagram && (
-                <a href={data.instagram} target="_blank">
-                  <InstagramIcon fontSize="large"/>
+                <a href={data.instagram} target="_blank" style={{color:{iconColor}}}>
+                  <IconBrandInstagram size={32} color={iconColor}/>
                 </a>
                 )}
                 {data.twitter && (
@@ -127,6 +141,7 @@ const University = () => {
                     {data.website ? (
                       <a href={data.website}
                       target="_blank"
+                      color="white"
                     >
                     <LanguageIcon />
                     </a>
@@ -147,6 +162,25 @@ const University = () => {
                 {/*<MoreVertIcon />*/}
               </div>
               
+            </div>
+            <div className="uInfo">
+            <div className="center">
+                <h3 style={{textAlign:"left"}}>{data.description}</h3>
+                <div className="info">
+                  <div className="item">
+                    <PersonIcon />
+                    {data.numberOfStudents}
+
+                  </div>
+                  <div className="item">
+                    
+                    <SchoolIcon />
+                    {rsoCount}
+
+                  </div>
+                </div>
+                {/*<span>{data.description}</span>*/}
+              </div>
             </div>
             <RSOList query="/rso/getUniversityRSOs/" universityID={universityId} />
           </div>

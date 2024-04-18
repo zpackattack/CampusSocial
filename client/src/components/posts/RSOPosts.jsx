@@ -17,7 +17,7 @@ const RSOPosts = ({rsoID}) => {
         ? "Something went wrong!"
         : isLoading
         ? "loading"
-        : data.map((event) => <Post post={event} key={event.eventID} />)}
+        : data.map((event) => <Post post={event} />)}
     </div>
   );
 };

@@ -2,11 +2,9 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./CreateUniversity.scss";
 import axios from "axios";
-import { SearchBar } from "../../components/searchBar/SearchBar";
-import { SearchResultsList } from "../../components/searchBar/SearchResultsList";
-import CreateUniversityForm from "../../components/update/CreateUniversityForm";
 import { makeRequest } from "../../axios";
-
+import { IconBrandFacebook, IconBrandX } from '@tabler/icons-react';
+import InstagramIcon from "@mui/icons-material/Instagram";
 
 
 
@@ -148,7 +146,7 @@ const CreateUniversity = () => {
       <h1>Create University Request</h1>
         <form onSubmit={handleSubmit}>
           <label>
-            University Name:
+            University Name
             <input
               type="text"
               name="name"
@@ -158,7 +156,7 @@ const CreateUniversity = () => {
             />
           </label>
           <label>
-            Description:
+            Description
             <input
               type="text"
               name="description"
@@ -168,7 +166,7 @@ const CreateUniversity = () => {
             />
           </label>
           <label>
-            Number of Students:
+            Number of Students
             <input
               type="text"
               name="numberOfStudents"
@@ -178,7 +176,7 @@ const CreateUniversity = () => {
             />
           </label>
           <label>
-            Website:
+            Website
             <input
               type="text"
               name="website"
@@ -188,7 +186,7 @@ const CreateUniversity = () => {
             />
           </label>
           <label>
-            Link to cover picture:
+            Link to cover picture
             <input
               type="text"
               name="pictures"
@@ -197,7 +195,7 @@ const CreateUniversity = () => {
             />
           </label>
           <label>
-            Link to logo:
+            Link to logo
             <input
               type="text"
               name="logo"
@@ -206,7 +204,7 @@ const CreateUniversity = () => {
             />
           </label>
           <label>
-            University email extension:
+            University email extension
             <input
               type="text"
               name="extension"
@@ -216,7 +214,7 @@ const CreateUniversity = () => {
             />
           </label>
           <label>
-            Instagram:
+          <InstagramIcon fontSize="medium"/>
             <input
               type="text"
               name="instagram"
@@ -225,7 +223,7 @@ const CreateUniversity = () => {
             />
           </label>
           <label>
-            X:
+            <IconBrandX />
             <input
               type="text"
               name="twitter"
@@ -234,7 +232,7 @@ const CreateUniversity = () => {
             />
           </label>
           <label>
-            Facebook:
+            <IconBrandFacebook />
             <input
               type="text"
               name="facebook"

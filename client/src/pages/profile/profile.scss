@@ -40,6 +40,9 @@
       @include tablet{
         padding: 20px;
       }
+      a:visited {
+        color: themed("textColor");
+      }
 
       .uInfo {
         height: 180px;
@@ -72,7 +75,7 @@
           }
 
           a{
-            color: themed("textColorSoft");
+            color: themed("textColor");
           }
         }
 
@@ -98,7 +101,15 @@
               display: flex;
               align-items: center;
               gap: 5px;
-              color: themed("textColorSoft");
+              color: themed("textColor");
+              a {
+                  color: themed("textColor");
+                
+              }
+
+              a:visited {
+                color: themed("textColor");
+              }
 
               span {
                 font-size: 12px;
@@ -121,6 +132,13 @@
           align-items: center;
           justify-content: flex-end;
           gap: 10px;
+
+          a{
+            color: themed("textColor");
+          }
+          a:visited {
+            color: themed("textColor");
+          }
         }
         .parent-container {
           overflow-y: auto; /* Enable vertical scrolling */

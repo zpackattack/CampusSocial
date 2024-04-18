@@ -14,11 +14,12 @@ import { makeRequest } from "../../axios";
 import { useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
-import Update from "../../components/update/Update";
 import { useState } from "react";
 import CreateEvent from "../../components/update/CreateEvent";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [openUpdate, setOpenUpdate] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const [openCreate, setOpenCreate] = useState(false);
@@ -34,9 +35,10 @@ const Profile = () => {
 
   const queryClient = useQueryClient();
 
-  const handleFollow = () => {
-    console.log("should't be here");
-  };
+  const logout = ()=>{
+    navigate("/login");
+  }
+
 
  
 
@@ -46,10 +48,10 @@ const Profile = () => {
         "loading"
       ) : (
         <>
-          <div className="images">
-           <img src="https://cdn.mos.cms.futurecdn.net/wtqqnkYDYi2ifsWZVW2MT4-1200-80.jpg" alt="" className="cover" />
-            {/*<img src={"/upload/"+data.profilePic} alt="" className="profilePic" />*/}
-          </div>
+          {/*<div className="images">
+          <img src="https://cdn.mos.cms.futurecdn.net/wtqqnkYDYi2ifsWZVW2MT4-1200-80.jpg" alt="" className="cover" />
+            <img src={"/upload/"+data.profilePic} alt="" className="profilePic" />
+          </div>*/}
           <div className="profileContainer">
             <div className="uInfo">
               
@@ -59,11 +61,13 @@ const Profile = () => {
                   {data.userID === currentUser.userID ? (
                     <>
                     <div className="item">
-                    <button onClick={() => setOpenUpdate(true)}>update</button>
+                    <button style={{backgroundColor:"#f0544f"}} onClick={() => logout()}>Logout</button>
                     </div>
+                    {currentUser.userType>=1 && (
                     <div className="item">
                     <button onClick={() => setOpenCreate(true)}>Create Event</button>
                     </div>
+                    )}
                     </>
                   ):(
                     <span></span>
@@ -78,7 +82,6 @@ const Profile = () => {
           </div>
         </>
       )}
-      {openUpdate && <Update setOpenUpdate={setOpenUpdate} user={data} />}
       {openCreate && <CreateEvent setOpenCreate={setOpenCreate} />}
     </div>
   );

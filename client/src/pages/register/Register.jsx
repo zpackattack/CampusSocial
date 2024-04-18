@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./register.scss";
 import axios from "axios";
 import { SearchBar } from "../../components/searchBar/SearchBar";
@@ -8,6 +8,7 @@ import { SearchResultsList } from "../../components/searchBar/SearchResultsList"
 
 
 const Register = () => {
+  const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     name: "",
     username: "",
@@ -72,6 +73,7 @@ const Register = () => {
 
     try {
       await axios.post("http://localhost:8800/api/auth/register", inputs);
+      navigate("/login");
     } catch (err) {
       setErr(err.response.data);
     }

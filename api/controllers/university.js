@@ -78,7 +78,7 @@ export const createUniversity = (req, res) => {
           const qu =
           "UPDATE users SET universityID=? WHERE userID=? ";
 
-          db.query(qu, [universityID, adminID], (error, res) => {
+          db.query(qu, [universityID, adminID], (error, resu) => {
             if (error) {
                 console.error('Error executing MySQL query: ' + error);
                 res.status(500).json({ error: 'Internal server error' });

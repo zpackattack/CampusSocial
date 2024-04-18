@@ -7,19 +7,40 @@ import './UniversityRequestPortal.scss';
 const UniversityRequestPortal = () => {
   const { currentUser } = useContext(AuthContext);
   const [requests, setRequests] = useState([]);
+  const [uniLocations, setUniLocations] = useState({});
 
 
   const fetchUniversityRequests = async () => {
     try {
       const response = await makeRequest.get('/university/universityRequest/0');
+      
       setRequests(response.data);
+
+      response.data.forEach(request => {
+        fetchUniLocations(request.universityrequestID, request.locationID);
+      });
 
     } catch (error) {
       console.error('Error fetching University requests:', error);
     }
   };
 
-  
+  const fetchUniLocations = async (requestID, locationID) => {
+    try {
+      const response = await makeRequest.get(`/event/location?locationID=${locationID}`);
+      let r = response.data;
+      if (response.data.length > 0){
+      console.log("locations ", response.data[0]);
+      r=response.data[0]
+      }
+      setUniLocations((prev) => ({
+        ...prev,
+        [requestID]: r,
+      }));
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+    }
+  };
 
   
   useEffect(() => {
@@ -34,12 +55,12 @@ const UniversityRequestPortal = () => {
     };
 
     const uniBody = {
-      name: request.rsoName,
+      name: request.name,
       locationID: request.locationID,
       description: request.description,
       numberOfStudents: request.numberOfStudents,
       pictures: request.pictures,
-      extension: request.extension,
+      extension: request.ext,
       instagram: request.instagram,
       twitter: request.twitter,
       facebook: request.facebook,
@@ -54,7 +75,8 @@ const UniversityRequestPortal = () => {
 
     try {
       
-      await makeRequest.post(`/university/`, body);
+      await makeRequest.post(`/university/`, uniBody);
+      console.log("one done");
       await makeRequest.put(`/university/universityRequest`, body);
 
 
@@ -100,10 +122,18 @@ const UniversityRequestPortal = () => {
             <tr key={request.requestID}>
               <td><a href={request.website} target='_blank'>{request.name}</a></td>
               <td>{request.description}</td>
-              <td>{request.ext}</td>
+              <td style={{width: "15%"}}>
+                <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${uniLocations[request.universityrequestID]?.latitude ? uniLocations[request.universityrequestID].latitude: ""},${uniLocations[request.universityrequestID]?.longitude ? uniLocations[request.universityrequestID].longitude: ""}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                  {uniLocations[request.universityrequestID]?.name ? uniLocations[request.universityrequestID].name: "no name"}
+                </a>
+            </td>
               <td>{request.numberOfStudents}</td>
               <td style={{width: "15%"}}>{`${request.adminName} (${request.adminEmail})`}</td>
-              <td>
+              <td style={{width: "20%"}}>
                 <button  className="approve" onClick={() => handleApprove(request)}>Approve</button>
                 <button  className="deny" onClick={() => handleDeny(request)}>Deny</button>
               </td>

@@ -3,10 +3,10 @@ import jwt from "jsonwebtoken";
 
 
 export const createRSO = (req, res) => {
-    const q = "SELECT * FROM rsos WHERE name = ?";
+    const q = "SELECT * FROM rsos WHERE name = ? AND universityID = ?";
     console.log(q);
 
-    db.query(q, [req.body.name], (err, data) => {
+    db.query(q, [req.body.name, req.body.universityID], (err, data) => {
         if (err) return res.status(500).json(err);
         if (data.length) return res.status(409).json("RSO already exists!");
 
@@ -105,7 +105,7 @@ export const getAdminRSOs = (req, res) => {
 export const getRSO = (req, res) => {
     const rsoID = req.params.rsoID;
 
-    // SQL query to retrieve RSOs that the user is a part of
+    
     const query = `
         SELECT R.*
         FROM rsos R
@@ -127,7 +127,7 @@ export const getRSO = (req, res) => {
 export const getUniversityRSOs = (req, res) => {
     const universityID = req.params.universityID;
 
-    // SQL query to retrieve RSOs that the user is a part of
+    
     const query = `
       SELECT r.*, COUNT(m.userID) AS memberCount
       FROM rsos AS r
@@ -153,11 +153,33 @@ export const getUniversityRSOs = (req, res) => {
 export const getUniversityRSOsAll = (req, res) => {
     const universityID = req.params.universityID;
 
-    // SQL query to retrieve RSOs that the user is a part of
+    
     const query = `
       SELECT r.*
       FROM rsos AS r
       WHERE r.universityID = ?
+    `;
+
+    db.query(query, [universityID], (error, results) => {
+        if (error) {
+            console.error('Error executing MySQL query: ' + error);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        const rsos = results.map(result => result.name);
+        res.json(results);
+        
+    });
+}
+
+export const getUniversityRSOCount = (req, res) => {
+    const universityID = req.params.universityID;
+
+    
+    const query = `
+      SELECT COUNT(*) AS rsoCount
+      FROM rsos
+      WHERE universityID = ?
     `;
 
     db.query(query, [universityID], (error, results) => {
@@ -177,7 +199,7 @@ export const getUniversityRSOsNotMember = (req, res) => {
     const { universityID, userID } = req.params;
 
 
-    // SQL query to retrieve RSOs that the user is not a part of
+    
     const query = `
         SELECT *
         FROM rsos
@@ -202,7 +224,6 @@ export const getUniversityRSOsNotMember = (req, res) => {
 export const checkUserInRSO = (req, res) => {
     const { userID, rsoID } = req.params;
 
-    // SQL query to check if the user is a member of the RSO
     const query = `
         SELECT COUNT(*) AS count
         FROM rsomembers
@@ -219,7 +240,7 @@ export const checkUserInRSO = (req, res) => {
 
         const count = results[0].count;
 
-        // Check if the count is greater than 0, indicating that the user is a member of the RSO
+       
         const isMember = count > 0;
 
         res.json({ isMember });
@@ -229,7 +250,7 @@ export const checkUserInRSO = (req, res) => {
 export const deleteMemberFromRSO = (req, res) => {
     const { userID, rsoID } = req.params;
 
-    // SQL query to delete member from RSO
+    
     const query = `
         DELETE FROM rsomembers
         WHERE userID = ? AND rsoID = ?
@@ -242,7 +263,7 @@ export const deleteMemberFromRSO = (req, res) => {
             return;
         }
         
-        // Check if any rows were affected
+       
         if (results.affectedRows > 0) {
             res.json({ message: 'Member deleted from RSO successfully' });
         } else {
@@ -254,7 +275,7 @@ export const deleteMemberFromRSO = (req, res) => {
 export const countRSOMembers = (req, res) => {
     const { rsoID } = req.params;
 
-    // SQL query to check if the user is a member of the RSO
+    
     const query = `
         SELECT COUNT(*) AS count
         FROM rsomembers
@@ -276,9 +297,9 @@ export const countRSOMembers = (req, res) => {
 
 export const updateRSO = (req, res) => {
     const { rsoID } = req.params;
-    const updatedRSOData = req.body; // Updated RSO data to be provided in the request body
+    const updatedRSOData = req.body; 
 
-    // SQL query to update the RSO
+    
     const query = `
         UPDATE rsos
         SET ?
@@ -298,12 +319,12 @@ export const updateRSO = (req, res) => {
 
 
 export const createRSORequest = async (req, res) => {
-    const q = "SELECT * FROM rsos WHERE name = ?";
+    const q = "SELECT * FROM rsos WHERE name = ? AND universityID = ?";
     console.log(q);
 
     try {
         const data = await new Promise((resolve, reject) => {
-            db.query(q, [req.body.name], (err, data) => {
+            db.query(q, [req.body.name, req.body.universityID], (err, data) => {
                 if (err) reject(err);
                 else resolve(data);
             });
@@ -369,20 +390,70 @@ export const createRSORequest = async (req, res) => {
 
 export const getUsersRSORequest = async (req, res) => {
     try {
-        // Get the userID from request parameters
+        
         const { userID } = req.params;
     
-        // SQL query to fetch RSO requests sorted by status
+       
         const query = `SELECT * FROM rsorequests WHERE userID = ? ORDER BY status;`;
     
-        // Execute the query
+        
         db.query(query, [userID], (error, results) => {
           if (error) {
             console.error('Error executing MySQL query:', error);
             return res.status(500).json({ error: 'Internal server error' });
           }
     
-          // Send the sorted RSO requests in the response
+          
+          res.json(results);
+        });
+      } catch (error) {
+        console.error('Error fetching RSO requests:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+};
+
+export const getUsersRSORequestCount = async (req, res) => {
+    try {
+        
+        const { userID } = req.params;
+    
+        
+        const query = `SELECT COUNT(*) AS userRSORequestCount
+        FROM rsorequests
+        WHERE userID = ?`;
+    
+        
+        db.query(query, [userID], (error, results) => {
+          if (error) {
+            console.error('Error executing MySQL query:', error);
+            return res.status(500).json({ error: 'Internal server error' });
+          }
+    
+          
+          res.json(results);
+        });
+      } catch (error) {
+        console.error('Error fetching RSO requests:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+};
+
+export const getUsersRSOCount = async (req, res) => {
+    try {
+        const { userID } = req.params;
+    
+        
+        const query = `SELECT COUNT(*) AS adminRSOCount
+        FROM rsos
+        WHERE adminID = ?`;
+    
+        
+        db.query(query, [userID], (error, results) => {
+          if (error) {
+            console.error('Error executing MySQL query:', error);
+            return res.status(500).json({ error: 'Internal server error' });
+          }
+    
           res.json(results);
         });
       } catch (error) {

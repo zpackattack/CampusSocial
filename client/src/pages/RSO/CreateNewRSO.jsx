@@ -71,6 +71,7 @@ const CreateRSORequest = () => {
         description: "",
         addMembers: ['','','','']
       });
+      setError("");
     } catch (error) {
       console.error("Error creating event:", error);
       if (error.response && error.response.data && error.response.data.message) {

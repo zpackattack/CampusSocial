@@ -1,6 +1,6 @@
 .register {
   height: 100vh;
-  background-color: rgb(193, 190, 255);
+  background-color: #758eff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,10 +14,12 @@
     min-height: 600px;
     height: 70vh;
     overflow: hidden;
+    box-shadow: 3px 3px 5px 5px rgba(0,0,0,0.07);
+    
 
     .left {
       flex: 1;
-      background: linear-gradient(rgba(39, 11, 96, 0.5), rgba(39, 11, 96, 0.5)),
+      background: linear-gradient(#92a6fe, #4062fc),
         url("https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600")
           center;
       background-size: cover;
@@ -44,9 +46,10 @@
         padding: 10px;
         border: none;
         background-color: white;
-        color: rebeccapurple;
+        color: #5271ff;
         font-weight: bold;
         cursor: pointer;
+        border-radius: 5%;
       }
     }
 
@@ -77,10 +80,11 @@
           width: 50%;
           padding: 10px;
           border: none;
-          background-color: #938eef;
+          background-color: #5271ff;
           color: white;
           font-weight: bold;
           cursor: pointer;
+          border-radius: 5%;
         }
       }
     }

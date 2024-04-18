@@ -13,33 +13,58 @@ import { useContext } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
 import { makeRequest } from '../../axios';
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 const Navbar = () => {
   const { toggle, darkMode } = useContext(DarkModeContext);
   const { currentUser } = useContext(AuthContext);
-  const [ data, setData ] = useState()
+  
+
+  const { isLoading, error, data } = useQuery(["university"], () =>
+    makeRequest.get("/university/id/" + currentUser.universityID).then((res) => {
+      console.log("nav Uni", res.data);
+      return res.data[0];
+    })
+  );
 
 
 
   return (
     <div className="navbar">
       <div className="left">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/" style={{ textDecoration: "none", color: "#5271ff" }}>
           <span>Campus Social</span>
         </Link>
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
         <HomeOutlinedIcon />
         </Link>
         {darkMode ? (
-          <WbSunnyOutlinedIcon onClick={toggle} />
+          <WbSunnyOutlinedIcon onClick={toggle} style={{zIndex:99}}/>
         ) : (
-          <DarkModeOutlinedIcon onClick={toggle} />
+          <DarkModeOutlinedIcon onClick={toggle} style={{zIndex:99}}/>
         )}
-        <GridViewOutlinedIcon />
+        {/*<GridViewOutlinedIcon />
         <div className="search">
           <SearchOutlinedIcon />
           <input type="text" placeholder="Search..." />
+      </div>*/}
+      
       </div>
+
+      <div className="center" style={{marginLeft: "-30%", width: "45%"}}>
+      {data?.logo ? (
+              <>
+                <img src={data.logo} alt="" style={{paddingLeft: "50%", zIndex: 1}}/>
+                
+              </>
+              ):(
+              <>
+                <img src="https://cdn2.iconfinder.com/data/icons/maki/100/college-512.png" alt="" />
+              </>
+            )}
+    {data?.name && (
+      <span>{data.name}</span>
+    )}
       </div>
 
       <div className="right">

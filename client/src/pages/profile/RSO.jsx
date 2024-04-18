@@ -135,14 +135,18 @@ const handleAdd = () => {
                   "loading"
                 ) : data[0].adminID === currentUser.userID ? (
                   <>
-                  <button onClick={() => setOpenUpdate(true)}>Update</button>
-                  <button onClick={() => setOpenCreate(true)}>Create Event</button>
+                  {memberCount >= 5 ? (
+                    <>
+                      <button onClick={() => setOpenUpdate(true)}>Update</button>
+                      <button onClick={() => setOpenCreate(true)}>Create Event</button>
+                    </>
+                  ) : (
+                    <button>inactive</button>
+                  )}
                   </>
                 ) : (
                   <button onClick={handleAdd}>
-                    {joined
-                      ? "Leave"
-                      : "Join"}
+                    {joined ? "Leave" : "Join"}
                   </button>
                 )}
                 </div>

@@ -64,6 +64,8 @@ const EventPortal = () => {
 
   return (
     <div className="eventPortal">
+      {currentUser.userType >= 3 ?(
+        <>
       <h1>Public Event Requests</h1>
       <table>
         <thead>
@@ -93,6 +95,10 @@ const EventPortal = () => {
           ))}
         </tbody>
       </table>
+      </>
+      ):(
+        <h1>You do not have access to this page. Try logging in as a super admin to access.</h1>
+      )}
     </div>
   );
 };

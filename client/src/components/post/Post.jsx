@@ -20,9 +20,11 @@ import { Rating } from "@mui/material";
 import CategoryIcon from '@mui/icons-material/Category';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import ShareButtons from "./share";
+import UpdateEvent from "../update/UpdateEvent";
 
 const Post = ({ post }) => {
   const [commentOpen, setCommentOpen] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [averageRating, setAverageRating] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
@@ -89,6 +91,19 @@ const Post = ({ post }) => {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to permanently delete this event?");
+    if (confirmDelete) {
+      try {
+        await makeRequest.delete(`/event/${post.eventID}`);
+        
+      } catch (error) {
+        console.error("Error deleting event:", error);
+      }
+    }
+  };
+  
+
   const formattedDate = moment(post.date).format("MMMM DD, YYYY");
   const formattedTime = moment(post.time, "HH:mm:ss").format("hh:mm A");
   return (
@@ -107,7 +122,10 @@ const Post = ({ post }) => {
           {post.posterID === currentUser.userID && (
           <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />)}
           {menuOpen && post.posterID === currentUser.userID && (
-            <button onClick={fetchCommentCount()}>delete</button>
+            <>
+            <button onClick={() => setOpenUpdate(true)} style={{backgroundColor: "#5271ff"}}>edit</button>
+            <button onClick={() => handleDelete()} style={{marginTop: "40px"}}>delete</button>
+            </>
           )}
         </div>
         <div className="info">
@@ -167,7 +185,9 @@ const Post = ({ post }) => {
           </div>
         </div>
         {commentOpen && <Comments postId={post.eventID} recallState={recallAllAPIs}/>}
+        
       </div>
+      {openUpdate && <UpdateEvent setOpenUpdate={setOpenUpdate} event={post} location={location} />}
     </div>
   );
 };

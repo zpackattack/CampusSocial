@@ -10,12 +10,42 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 const LeftBar = () => {
 
   const { currentUser } = useContext(AuthContext);
+  const [rsoCount, setRSOCount] = useState(0);
+  const [rsoRequestCount, setRSORequestCount] = useState(0);
   const { isLoading, error, data } = useQuery(["university"], () =>
     makeRequest.get("/university/id/" + currentUser.universityID).then((res) => {
       console.log("uni", res.data);
       return res.data[0];
     })
   );
+
+  const fetchUserRSOCount = async () => {
+    try {
+      const response = await makeRequest.get('/rso/userRSOCount/'+ currentUser.userID);
+      console.log(currentUser.userID);
+      console.log("RSO ", response.data[0].adminRSOCount);
+      setRSOCount(response.data[0].adminRSOCount);
+
+    } catch (error) {
+      console.error('Error fetching rsoCount requests:', error);
+    }
+  };
+
+  const fetchUserRSORequestCount = async () => {
+    try {
+      const response = await makeRequest.get('/rso/userRSORequestCount/'+ currentUser.userID);
+      
+      setRSORequestCount(response.data[0].userRSORequestCount);
+
+    } catch (error) {
+      console.error('Error fetching rsoRequestCount requests:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserRSOCount();
+    fetchUserRSORequestCount();
+  }, []);
 
   return (
     <div className="leftBar">
@@ -65,13 +95,15 @@ const LeftBar = () => {
             <span>Create RSO</span>
           </div>
           </Link>
+          {rsoRequestCount >= 1 ? (
           <Link to={`/yourRSORequests`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
             <img src="https://cdn-icons-png.freepik.com/256/12901/12901779.png" alt="" />
             <span>Your RSO Requests</span>
           </div>
           </Link>
-          {currentUser.userType >= 1 ? (
+          ):(<></>)}
+          {currentUser.userType >= 1 && rsoCount >=1 ? (
           <Link to={`/yourAdminRSOs`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
             <img src="https://www.intertek.com/siteassets/about-us/5_44500-people_icon_RGB.png" alt="" />
@@ -95,7 +127,7 @@ const LeftBar = () => {
           </div>
           </Link>
           ):(<></>)}
-          {currentUser.userType >= 3 ? (
+          {currentUser.userType >= 4 ? (
           <Link to={`/UniversityRequests`} style={{ textDecoration: 'none', color: 'inherit' }}> 
           <div className="item">
             <img src="https://www.jp.pima.gov/Images/Small%20Claims%20Icon.png" alt="" />
